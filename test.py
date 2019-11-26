@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from src.testrail_exception import TestRailTestRunException, TestRailTestException
+from .testrail_exception import TestRailTestRunException, TestRailTestException
 from urllib import error as E
 import time
 

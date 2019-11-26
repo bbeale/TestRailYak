@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from src.testrail_exception import TestRailProjectException, TestRailTestPlanException, TestRailNewEntityException
+from .testrail_exception import TestRailProjectException, TestRailTestPlanException, TestRailNewEntityException
 from urllib import error as E
 import time
 

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from lib.testrail import APIError
 
+
 # TestRail
 class TestRailException(APIError):
     pass
@@ -45,4 +46,3 @@ class TestRailNewEntityException(TestRailException):
 
 class TestRailSuiteModeException(TestRailException):
     pass
-

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from src.testrail_exception import (
+from .testrail_exception import (
     TestRailProjectException,
     TestRailTestRunException,
     TestRailNewEntityException

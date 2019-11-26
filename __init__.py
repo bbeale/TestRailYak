@@ -1,18 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIClient
-from src.project import Project
-from src.section import Section
-from src.test import Test
-from src.test_case import TestCase
-from src.test_plan import TestPlan
-from src.test_run import TestRun
-from src.test_suite import TestSuite
-from src.user import User
+from .lib.testrail import APIClient
+from .project import Project
+from .section import Section
+from .test import Test
+from .test_case import TestCase
+from .test_plan import TestPlan
+from .test_run import TestRun
+from .test_suite import TestSuite
+from .user import User
 
 
 class mhTestRail(APIClient):
+    """A class to build on top of Gurock's Python interface
 
+    https://github.com/gurock/testrail-api.git
+    """
     def __init__(self, config, base_url):
 
         super().__init__(base_url)
