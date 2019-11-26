@@ -16,7 +16,7 @@ class mhTestRail(APIClient):
 
     https://github.com/gurock/testrail-api.git
     """
-    def __init__(self, config, base_url):
+    def __init__(self, config, base_url=None):
 
         super().__init__(base_url)
 
