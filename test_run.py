@@ -269,10 +269,10 @@ class TestRun:
             return value is not None and value is not ""
 
         _valid = dict()
-        for k, v in data_dict:
+        for k, v in data_dict.items():
 
-            print("[debug] Valid key\t:", _valid_key(k),
-                  "\tValid value\t:", _valid_value(v))
+            print("[debug] Valid key:\t", _valid_key(k),
+                  "\tValid value:\t", _valid_value(v))
 
             if _valid_key(k) and _valid_value(v):
                 _valid[k] = v
