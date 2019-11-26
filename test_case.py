@@ -90,11 +90,6 @@ class TestCase:
         if section_id <= 0:
             raise TestRailSectionException("section_id must be > 0.")
 
-        try:
-            self.get_section(section_id)["parent_id"] is not None
-        except IndexError:
-            raise TestRailSectionException("parent_id must not be None as that would assign a test case directly to a sprint.")
-
         if not title or title is None:
             raise TestRailNewEntityException("Test case title required.")
 
