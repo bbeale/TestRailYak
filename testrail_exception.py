@@ -44,5 +44,13 @@ class TestRailNewEntityException(TestRailException):
     pass
 
 
+class TestRailUpdateException(TestRailException):
+    pass
+
+
+class TestRailDeleteException(TestRailException):
+    pass
+
+
 class TestRailSuiteModeException(TestRailException):
     pass
