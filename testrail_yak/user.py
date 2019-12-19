@@ -7,7 +7,7 @@ import time
 
 class User:
 
-    __module__ = "mh_testrail"
+    __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api

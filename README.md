@@ -1,4 +1,4 @@
-# mhTestRail
+# TestRailYak
 
 A Python library for interacting with the TestRail REST API.
 

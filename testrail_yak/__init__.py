@@ -1,28 +1,28 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .lib.testrail import APIClient
-from .project import Project
-from .section import Section
-from .test import Test
-from .test_case import TestCase
-from .test_plan import TestPlan
-from .test_run import TestRun
-from .test_suite import TestSuite
-from .user import User
+from lib.testrail import APIClient
+from testrail_yak.project import Project
+from testrail_yak.section import Section
+from testrail_yak.test import Test
+from testrail_yak.test_case import TestCase
+from testrail_yak.test_plan import TestPlan
+from testrail_yak.test_run import TestRun
+from testrail_yak.test_suite import TestSuite
+from testrail_yak.user import User
 
 
-class mhTestRail(APIClient):
+class TestRailYak(APIClient):
     """A class to build on top of Gurock's Python interface
 
     https://github.com/gurock/testrail-api.git
     """
-    def __init__(self, config):
+    def __init__(self, url, uname, passwd):
 
-        super().__init__(config["url"])
+        super().__init__(url)
 
-        self.client             = APIClient(config["url"])
-        self.client.user        = config["user"]
-        self.client.password    = config["password"]
+        self.client             = APIClient(url)
+        self.client.user        = uname
+        self.client.password    = passwd
         self.project            = Project(self.client)
         self.section            = Section(self.client)
         self.test               = Test(self.client)
