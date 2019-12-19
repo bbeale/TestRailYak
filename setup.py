@@ -33,15 +33,16 @@ setup(name="testrail_yak",
       LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
       OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
       SOFTWARE."""),
-      description="Python library for interacting with the TestRail API, built on top of gurock\"s",
+      description="Python library for interacting with the TestRail API, built on top of gurock's",
       long_description=dedent("""\
       Getting Started:
-        ----------------
+
         To use the TestRail API via TestRailYak, install the package either by downloading the source and running
           $ python setup.py install
         or by using pip
           $ pip install testrail_yak
       """),
+      long_description_content_type="text/markdown",
       author="bbeale",
       setup_requires=['wheel'],
       requires=[
