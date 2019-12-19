@@ -44,7 +44,7 @@ setup(name="testrail_yak",
       """),
       long_description_content_type="text/markdown",
       author="bbeale",
+      url="https://github.com/bbeale/TestRailYak",
       setup_requires=['wheel'],
-      requires=[
-            "urllib3"
-      ])
+      requires=["urllib3"]
+      )
