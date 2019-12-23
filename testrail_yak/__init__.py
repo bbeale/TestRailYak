@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from ..lib.testrail import APIClient
-from testrail_yak.project import Project
-from testrail_yak.section import Section
-from testrail_yak.test import Test
-from testrail_yak.test_case import TestCase
-from testrail_yak.test_plan import TestPlan
-from testrail_yak.test_run import TestRun
-from testrail_yak.test_suite import TestSuite
-from testrail_yak.user import User
+from lib.testrail import APIClient
+from .project import Project
+from .section import Section
+from .test import Test
+from .test_case import TestCase
+from .test_plan import TestPlan
+from .test_run import TestRun
+from .test_suite import TestSuite
+from .user import User
 
 
 class TestRailYak(APIClient):
