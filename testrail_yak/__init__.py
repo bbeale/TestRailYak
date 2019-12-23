@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIClient
+from .testrail import APIClient
 from .project import Project
 from .section import Section
 from .test import Test

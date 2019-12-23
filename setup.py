@@ -6,7 +6,7 @@ from textwrap import dedent
 
 
 setup(name="testrail_yak",
-      version="0.0.3",
+      version="0.0.4",
       packages=["testrail_yak"],
       classifiers=[
             "Programming Language :: Python :: 3",
@@ -46,6 +46,6 @@ setup(name="testrail_yak",
       author="bbeale",
       author_email="beale.ben@gmail.com",
       url="https://github.com/bbeale/TestRailYak",
-      setup_requires=['wheel'],
+      setup_requires=["wheel", "requests"],
       requires=["urllib3"]
       )
