@@ -6,7 +6,7 @@ from textwrap import dedent
 
 
 setup(name="testrail_yak",
-      version="0.0.5",
+      version="0.0.6",
       packages=["testrail_yak"],
       classifiers=[
             "Programming Language :: Python :: 3",
