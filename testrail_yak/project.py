@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailProjectException, TestRailNewEntityException
-from urllib import error as E
+from testrail_yak import TestRailException, ValidationException
 import time
+
+
+class ProjectException(TestRailException):
+    pass
+
+
+class ProjectValidationException(ValidationException):
+    pass
 
 
 class Project:
@@ -17,13 +24,13 @@ class Project:
         result = None
         try:
             result = self.client.send_get("get_projects")
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get projects. Retrying")
+        except ProjectException:
+            print("[!] Failed to get projects. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_projects")
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get projects.")
+            except ProjectException:
+                print("[!] Failed to get projects.")
         finally:
             return result
 
@@ -34,24 +41,24 @@ class Project:
         :return: response from TestRail API containing the project
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise ProjectValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise ProjectValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise ProjectValidationException("[*] project_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_project/{}".format(project_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get project. Retrying")
+        except ProjectException:
+            print("[!] Failed to get project. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_project/{}".format(project_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get project.")
+            except ProjectException:
+                print("[!] Failed to get project.")
         finally:
             return result
 
@@ -65,7 +72,7 @@ class Project:
         :return: response from TestRail API containing the newly created project
         """
         if not name or name is None:
-            raise TestRailNewEntityException("Invalid project name. Unable to create new project.")
+            raise ProjectValidationException("[*] Invalid project name. Unable to create new project.")
 
         proj_data = dict(
             name                = name,
@@ -77,12 +84,12 @@ class Project:
         result = None
         try:
             result = self.client.send_post("add_project", proj_data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to add project. Retrying")
+        except ProjectException:
+            print("[!] Failed to add project. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_post("add_project", proj_data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to add project.")
+            except ProjectException:
+                print("[!] Failed to add project.")
         finally:
             return result

@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailUserException
-from urllib import error as E
+from testrail_yak import TestRailException, ValidationException
 import time
+
+
+class UserException(TestRailException):
+    pass
+
+
+class UserValidationException(ValidationException):
+    pass
 
 
 class User:
@@ -20,13 +27,13 @@ class User:
         result = None
         try:
             result = self.client.send_get("get_users")
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get users. Retrying")
+        except UserException:
+            print("[!] Failed to get users. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_users")
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get users.")
+            except UserException:
+                print("[!] Failed to get users.")
         finally:
             return result
 
@@ -37,16 +44,17 @@ class User:
         :return: response from TestRail API containing the user
         """
         if not user_id or user_id is None:
-            raise TestRailUserException("Invalid user_id")
+            raise UserValidationException("[*] Invalid user_id")
+
         result = None
         try:
             result = self.client.send_get("get_user/{}".format(user_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get user. Retrying")
+        except UserException:
+            print("[!] Failed to get user. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_user/{}".format(user_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get user.")
+            except UserException:
+                print("[!] Failed to get user.")
         finally:
             return result

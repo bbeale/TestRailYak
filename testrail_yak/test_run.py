@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import (
-    TestRailProjectException,
-    TestRailTestRunException,
-    TestRailNewEntityException,
-    TestRailUpdateException
-)
-
-from urllib import error as E
+from testrail_yak import TestRailException, ValidationException
 import time
+
+
+class TestRunException(TestRailException):
+    pass
+
+
+class TestRunValidationException(ValidationException):
+    pass
 
 
 class TestRun:
@@ -25,24 +26,24 @@ class TestRun:
         :return: response from TestRail API containing the test cases
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise TestRunValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise TestRunValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise TestRunValidationException("[*] project_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_runs/{}".format(project_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get test runs. Retrying")
+        except TestRunException:
+            print("[!] Failed to get test runs. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_runs/{}".format(project_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get test runs.")
+            except TestRunException:
+                print("[!] Failed to get test runs.")
         finally:
             return result
 
@@ -53,24 +54,24 @@ class TestRun:
         :return: response from TestRail API containing the test cases
         """
         if not run_id or run_id is None:
-            raise TestRailTestRunException("Invalid run_id")
+            raise TestRunValidationException("[*] Invalid run_id")
 
         if type(run_id) not in [int, float]:
-            raise TestRailTestRunException("run_id must be an int or float")
+            raise TestRunValidationException("[*] run_id must be an int or float")
 
         if run_id <= 0:
-            raise TestRailTestRunException("run_id must be > 0")
+            raise TestRunValidationException("[*] run_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_run/{}".format(run_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get test run. Retrying")
+        except TestRunException:
+            print("[!] Failed to get test run. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_run/{}".format(run_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get test run.")
+            except TestRunException:
+                print("[!] Failed to get test run.")
         finally:
             return result
 
@@ -109,29 +110,29 @@ class TestRun:
         :return: response from TestRail API containing the newly created test run
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id.")
+            raise TestRunValidationException("[*] Invalid project_id.")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float.")
+            raise TestRunValidationException("[*] project_id must be an int or float.")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0.")
+            raise TestRunValidationException("[*] project_id must be > 0.")
 
         if not name or name is None:
-            raise TestRailNewEntityException("Test run name value required.")
+            raise TestRunValidationException("[*] Test run name value required.")
 
         data = dict(name=name, include_all=True)
 
         result = None
         try:
             result = self.client.send_post("add_run/{}".format(project_id), data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to add test run. Retrying.")
+        except TestRunException:
+            print("[!] Failed to add test run. Retrying.")
             time.sleep(3)
             try:
                 result = self.client.send_post("add_run/{}".format(project_id), data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to add test run.")
+            except TestRunException:
+                print("[!] Failed to add test run.")
         finally:
             return result
 
@@ -163,13 +164,13 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailTestRunException("Invalid run_id.")
+            raise TestRunValidationException("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailTestRunException("run_id must be an int or float.")
+            raise TestRunValidationException("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailTestRunException("run_id must be > 0.")
+            raise TestRunValidationException("[*] run_id must be > 0.")
 
         supported_fields = [
             "name",
@@ -181,20 +182,20 @@ class TestRun:
         ]
 
         if not data or data is None:
-            raise TestRailUpdateException("asdfasdf")
+            raise TestRunValidationException("[*] data cannot be empty")
 
         data = self.validate_data(data, supported_fields)
 
         result = None
         try:
             result = self.client.send_post("update_run/{}".format(run_id), data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to update test run. Retrying.")
+        except TestRunException:
+            print("[!] Failed to update test run. Retrying.")
             time.sleep(3)
             try:
                 result = self.client.send_post("update_run/{}".format(run_id), data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to update test run.")
+            except TestRunException:
+                print("[!] Failed to update test run.")
         finally:
             return result
 
@@ -205,24 +206,24 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailTestRunException("Invalid run_id.")
+            raise TestRunValidationException("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailTestRunException("run_id must be an int or float.")
+            raise TestRunValidationException("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailTestRunException("run_id must be > 0.")
+            raise TestRunValidationException("[*] run_id must be > 0.")
 
         result = None
         try:
             result = self.client.send_post("close_run/{}".format(run_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to close test run. Retrying.")
+        except TestRunException:
+            print("[!] Failed to close test run. Retrying.")
             time.sleep(3)
             try:
                 result = self.client.send_post("close_run/{}".format(run_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to close test run.")
+            except TestRunException:
+                print("[!] Failed to close test run.")
         finally:
             return result
 
@@ -233,24 +234,24 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailTestRunException("Invalid run_id.")
+            raise TestRunValidationException("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailTestRunException("run_id must be an int or float.")
+            raise TestRunValidationException("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailTestRunException("run_id must be > 0.")
+            raise TestRunValidationException("[*] run_id must be > 0.")
 
         result = None
         try:
             result = self.client.send_post("delete_run/{}".format(run_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to delete test run. Retrying.")
+        except TestRunException:
+            print("[!] Failed to delete test run. Retrying.")
             time.sleep(3)
             try:
                 result = self.client.send_post("delete_run/{}".format(run_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to delete test run.")
+            except TestRunException:
+                print("[!] Failed to delete test run.")
         finally:
             return result
 

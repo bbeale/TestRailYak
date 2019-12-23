@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import (
-    TestRailProjectException,
-    TestRailSectionException,
-    TestRailTestSuiteException,
-    TestRailNewEntityException
-)
-
-from urllib import error as E
+from testrail_yak import TestRailException, ValidationException
 import time
+
+
+class SectionException(TestRailException):
+    pass
+
+
+class SectionValidationException(ValidationException):
+    pass
 
 
 class Section:
@@ -26,42 +27,42 @@ class Section:
         :return: response from TestRail API containing the collection of sections
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise SectionValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise SectionValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise SectionValidationException("[*] project_id must be > 0")
 
         result = None
         if suite_id is not None:
             if type(suite_id) not in [int, float]:
-                raise TestRailTestSuiteException("suite_id must be an int or float")
+                raise SectionValidationException("[*] suite_id must be an int or float")
 
             if suite_id <= 0:
-                raise TestRailTestSuiteException("suite_id must be > 0")
+                raise SectionValidationException("[*] suite_id must be > 0")
 
             try:
                 result = self.client.send_get("get_sections/{}&suite_id={}".format(project_id, suite_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get sections. Retrying")
+            except SectionException:
+                print("[!] Failed to get sections. Retrying")
                 time.sleep(3)
                 try:
                     result = self.client.send_get("get_sections/{}&suite_id={}".format(project_id, suite_id))
-                except E.HTTPError as httpe:
-                    print(httpe, "- Failed to get sections.")
+                except SectionException:
+                    print("[!] Failed to get sections.")
 
         else:
             try:
                 result = self.client.send_get("get_sections/{}".format(project_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get sections. Retrying")
+            except SectionException:
+                print("[!] Failed to get sections. Retrying")
                 time.sleep(3)
                 try:
                     result = self.client.send_get("get_sections/{}".format(project_id))
-                except E.HTTPError as httpe:
-                    print(httpe, "- Failed to get sections.")
+                except SectionException:
+                    print("[!] Failed to get sections.")
 
         return result
 
@@ -72,24 +73,24 @@ class Section:
         :return: response from TestRail API containing the test section
         """
         if not section_id or section_id is None:
-            raise TestRailSectionException("Invalid section_id")
+            raise SectionValidationException("[*] Invalid section_id")
 
         if type(section_id) not in [int, float]:
-            raise TestRailSectionException("section_id must be an int or float")
+            raise SectionValidationException("[*] section_id must be an int or float")
 
         if section_id <= 0:
-            raise TestRailSectionException("section_id must be > 0")
+            raise SectionValidationException("[*] section_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_section/{}".format(section_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get test section by ID. Retrying")
+        except SectionException:
+            print("[!] Failed to get test section by ID. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_section/{}".format(section_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get test section by ID.")
+            except SectionException:
+                print("[!] Failed to get test section by ID.")
         finally:
             return result
 
@@ -110,19 +111,19 @@ class Section:
             raise NotImplementedError("Not currently using suite_id in this call")
 
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise SectionValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise SectionValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise SectionValidationException("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestRailNewEntityException("Name field is required")
+            raise SectionValidationException("[*] Name field is required")
 
         if not description or description is None:
-            raise TestRailNewEntityException("Description field is required")
+            raise SectionValidationException("[*] Description field is required")
 
         sect_data = dict(
             name=name,
@@ -132,13 +133,13 @@ class Section:
         result = None
         try:
             result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to add new section for the current sprint. Retrying")
+        except SectionException:
+            print("[!] Failed to add new section for the current sprint. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to add section.")
+            except SectionException:
+                print("[!] Failed to add section.")
         finally:
             return result
 
@@ -158,19 +159,19 @@ class Section:
         :return: response from TestRail API containing the newly created test section
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise SectionValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise SectionValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise SectionValidationException("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestRailNewEntityException("Name field is required")
+            raise SectionValidationException("[*] Name field is required")
 
         if not description or description is None:
-            raise TestRailNewEntityException("Description field is required")
+            raise SectionValidationException("[*] Description field is required")
 
         sect_data = dict(
             parent_id=parent_id,
@@ -181,12 +182,12 @@ class Section:
         result = None
         try:
             result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to add new section for the current Jira story. Retrying")
+        except SectionException:
+            print("[!] Failed to add new section for the current Jira story. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to add section.")
+            except SectionException:
+                print("[!] Failed to add section.")
         finally:
             return result

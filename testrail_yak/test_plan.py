@@ -1,8 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailProjectException, TestRailTestPlanException, TestRailNewEntityException
-from urllib import error as E
+from testrail_yak import TestRailException, ValidationException
 import time
+
+
+class TestPlanException(TestRailException):
+    pass
+
+
+class TestPlanValidationException(ValidationException):
+    pass
 
 
 class TestPlan:
@@ -19,24 +26,24 @@ class TestPlan:
         :return: response from TestRail API containing the test cases
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id")
+            raise TestPlanValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float")
+            raise TestPlanValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0")
+            raise TestPlanValidationException("[*] project_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_plans/{}".format(project_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get test plans. Retrying")
+        except TestPlanException:
+            print("[!] Failed to get test plans. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_plans/{}".format(project_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get test plans.")
+            except TestPlanException:
+                print("[!] Failed to get test plans.")
         finally:
             return result
 
@@ -47,24 +54,24 @@ class TestPlan:
         :return: response from TestRail API containing the test cases
         """
         if not plan_id or plan_id is None:
-            raise TestRailTestPlanException("Invalid plan_id")
+            raise TestPlanValidationException("[*] Invalid plan_id")
 
         if type(plan_id) not in [int, float]:
-            raise TestRailTestPlanException("plan_id must be an int or float")
+            raise TestPlanValidationException("[*] plan_id must be an int or float")
 
         if plan_id <= 0:
-            raise TestRailTestPlanException("plan_id must be > 0")
+            raise TestPlanValidationException("[*] plan_id must be > 0")
 
         result = None
         try:
             result = self.client.send_get("get_plan/{}".format(plan_id))
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to get test plan. Retrying")
+        except TestPlanException:
+            print("[!] Failed to get test plan. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_get("get_plan/{}".format(plan_id))
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to get test plan.")
+            except TestPlanException:
+                print("[!] Failed to get test plan.")
         finally:
             return result
 
@@ -76,28 +83,28 @@ class TestPlan:
         :return: response from TestRail API containing the newly created test plan
         """
         if not project_id or project_id is None:
-            raise TestRailProjectException("Invalid project_id.")
+            raise TestPlanValidationException("[*] Invalid project_id.")
 
         if type(project_id) not in [int, float]:
-            raise TestRailProjectException("project_id must be an int or float.")
+            raise TestPlanValidationException("[*] project_id must be an int or float.")
 
         if project_id <= 0:
-            raise TestRailProjectException("project_id must be > 0.")
+            raise TestPlanValidationException("[*] project_id must be > 0.")
 
         if not name or name is None:
-            raise TestRailNewEntityException("Test plan name value required.")
+            raise TestPlanValidationException("[*] Test plan name value required.")
 
         data = dict(name=name, include_all=True)
 
         result = None
         try:
             result = self.client.send_post("add_plan/{}".format(project_id), data)
-        except E.HTTPError as httpe:
-            print(httpe, "- Failed to add test plan. Retrying")
+        except TestPlanException:
+            print("[!] Failed to add test plan. Retrying")
             time.sleep(3)
             try:
                 result = self.client.send_post("add_plan/{}".format(project_id), data)
-            except E.HTTPError as httpe:
-                print(httpe, "- Failed to add test plan.")
+            except TestPlanException:
+                print("[!] Failed to add test plan.")
         finally:
             return result
