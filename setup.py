@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import setuptools
-from distutils.core import setup
 from textwrap import dedent
 
 
-setup(name="testrail_yak",
-      version="0.0.6",
+setuptools.setup(
+      name="testrail_yak",
+      version="1.0.0",
       packages=["testrail_yak"],
       classifiers=[
             "Programming Language :: Python :: 3",
@@ -46,6 +46,6 @@ setup(name="testrail_yak",
       author="bbeale",
       author_email="beale.ben@gmail.com",
       url="https://github.com/bbeale/TestRailYak",
-      setup_requires=["wheel", "requests"],
+      setup_requires=["wheel", "setuptools"],
       requires=["urllib3"]
       )
