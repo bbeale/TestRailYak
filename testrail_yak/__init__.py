@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIClient, APIError
+from .testrail import APIClient
 from .project import Project
 from .section import Section
 from .test import Test
@@ -31,11 +31,3 @@ class TestRailYak(APIClient):
         self.test_run           = TestRun(self.client)
         self.test_suite         = TestSuite(self.client)
         self.user               = User(self.client)
-
-
-class TestRailException(APIError):
-    pass
-
-
-class ValidationException(ValueError):
-    pass
