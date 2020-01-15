@@ -122,9 +122,6 @@ class Section:
         if not name or name is None:
             raise SectionValidationException("[*] Name field is required")
 
-        if not description or description is None:
-            raise SectionValidationException("[*] Description field is required")
-
         sect_data = dict(
             name=name,
             description=description,
@@ -143,7 +140,7 @@ class Section:
         finally:
             return result
 
-    def add_story_section(self, project_id, parent_id, name, description):
+    def add_story_section(self, project_id, parent_id, name, description=None):
         """Add a new section representing a "story" to a TestRail project.
 
         This section will be assigned to a parent/child relationship with a parent section, thus parent_id is required.
@@ -169,9 +166,6 @@ class Section:
 
         if not name or name is None:
             raise SectionValidationException("[*] Name field is required")
-
-        if not description or description is None:
-            raise SectionValidationException("[*] Description field is required")
 
         sect_data = dict(
             parent_id=parent_id,
