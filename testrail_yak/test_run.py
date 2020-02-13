@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class TestRun:
@@ -17,17 +17,17 @@ class TestRun:
         :return: response from TestRail API containing the test cases
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         try:
             result = self.client.send_get("get_runs/{}".format(project_id))
-        except TestRailException("[!] Failed to get test runs.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -39,17 +39,17 @@ class TestRun:
         :return: response from TestRail API containing the test cases
         """
         if not run_id or run_id is None:
-            raise TestRailValidationException("[*] Invalid run_id")
+            raise APIValidationError("[*] Invalid run_id")
 
         if type(run_id) not in [int, float]:
-            raise TestRailValidationException("[*] run_id must be an int or float")
+            raise APIValidationError("[*] run_id must be an int or float")
 
         if run_id <= 0:
-            raise TestRailValidationException("[*] run_id must be > 0")
+            raise APIValidationError("[*] run_id must be > 0")
 
         try:
             result = self.client.send_get("get_run/{}".format(run_id))
-        except TestRailException("[!] Failed to get test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -89,22 +89,22 @@ class TestRun:
         :return: response from TestRail API containing the newly created test run
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id.")
+            raise APIValidationError("[*] Invalid project_id.")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float.")
+            raise APIValidationError("[*] project_id must be an int or float.")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0.")
+            raise APIValidationError("[*] project_id must be > 0.")
 
         if not name or name is None:
-            raise TestRailValidationException("[*] Test run name value required.")
+            raise APIValidationError("[*] Test run name value required.")
 
         data = dict(name=name, include_all=True)
 
         try:
             result = self.client.send_post("add_run/{}".format(project_id), data)
-        except TestRailException("[!] Failed to add new test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -137,13 +137,13 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailValidationException("[*] Invalid run_id.")
+            raise APIValidationError("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailValidationException("[*] run_id must be an int or float.")
+            raise APIValidationError("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailValidationException("[*] run_id must be > 0.")
+            raise APIValidationError("[*] run_id must be > 0.")
 
         supported_fields = [
             "name",
@@ -155,13 +155,13 @@ class TestRun:
         ]
 
         if not data or data is None:
-            raise TestRailValidationException("[*] data cannot be empty")
+            raise APIValidationError("[*] data cannot be empty")
 
         data = self._validate_data(data, supported_fields)
 
         try:
             result = self.client.send_post("update_run/{}".format(run_id), data)
-        except TestRailException("[!] Failed to update test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -173,17 +173,17 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailValidationException("[*] Invalid run_id.")
+            raise APIValidationError("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailValidationException("[*] run_id must be an int or float.")
+            raise APIValidationError("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailValidationException("[*] run_id must be > 0.")
+            raise APIValidationError("[*] run_id must be > 0.")
 
         try:
             result = self.client.send_post("close_run/{}".format(run_id))
-        except TestRailException("[!] Failed to close test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -195,17 +195,17 @@ class TestRun:
         :return:
         """
         if not run_id or run_id is None:
-            raise TestRailValidationException("[*] Invalid run_id.")
+            raise APIValidationError("[*] Invalid run_id.")
 
         if type(run_id) not in [int, float]:
-            raise TestRailValidationException("[*] run_id must be an int or float.")
+            raise APIValidationError("[*] run_id must be an int or float.")
 
         if run_id <= 0:
-            raise TestRailValidationException("[*] run_id must be > 0.")
+            raise APIValidationError("[*] run_id must be > 0.")
 
         try:
             result = self.client.send_post("delete_run/{}".format(run_id))
-        except TestRailException("[!] Failed to delete test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result

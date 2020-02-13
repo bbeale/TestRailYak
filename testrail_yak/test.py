@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class Test:
@@ -17,17 +17,17 @@ class Test:
         :return: response from TestRail API containing the test cases
         """
         if not run_id or run_id is None:
-            raise TestRailValidationException("[*] Invalid run_id")
+            raise APIValidationError("[*] Invalid run_id")
 
         if type(run_id) not in [int, float]:
-            raise TestRailValidationException("[*] run_id must be an int or float")
+            raise APIValidationError("[*] run_id must be an int or float")
 
         if run_id <= 0:
-            raise TestRailValidationException("[*] run_id must be > 0")
+            raise APIValidationError("[*] run_id must be > 0")
 
         try:
             result = self.client.send_get("get_tests/{}".format(run_id))
-        except TestRailException("[!] Failed to get tests from test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -39,17 +39,17 @@ class Test:
         :return: response from TestRail API containing the test
         """
         if not test_id or test_id is None:
-            raise TestRailValidationException("[*] Invalid test_id")
+            raise APIValidationError("[*] Invalid test_id")
 
         if type(test_id) not in [int, float]:
-            raise TestRailValidationException("[*] test_id must be an int or float")
+            raise APIValidationError("[*] test_id must be an int or float")
 
         if test_id <= 0:
-            raise TestRailValidationException("[*] test_id must be > 0")
+            raise APIValidationError("[*] test_id must be > 0")
 
         try:
             result = self.client.send_get("get_test/{}".format(test_id))
-        except TestRailException("[!] Failed to get test from test run.") as error:
+        except APIError as error:
             raise error
         else:
             return result

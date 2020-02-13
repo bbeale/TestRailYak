@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class User:
@@ -17,7 +17,7 @@ class User:
         """
         try:
             result = self.client.send_get("get_users")
-        except TestRailException("[!] Failed to get users.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -29,11 +29,11 @@ class User:
         :return: response from TestRail API containing the user
         """
         if not user_id or user_id is None:
-            raise TestRailValidationException("[!] Invalid user_id")
+            raise APIValidationError("[!] Invalid user_id")
 
         try:
             result = self.client.send_get("get_user/{}".format(user_id))
-        except TestRailException("[!] Failed to get user.") as error:
+        except APIError as error:
             raise error
         else:
             return result

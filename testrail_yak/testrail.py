@@ -101,3 +101,7 @@ class APIClient:
 
 class APIError(Exception):
 	pass
+
+
+class APIValidationError(ValueError):
+	pass

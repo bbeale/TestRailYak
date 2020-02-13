@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class Project:
@@ -14,7 +14,7 @@ class Project:
         """Get all projects from the TestRail API."""
         try:
             result = self.client.send_get("get_projects")
-        except TestRailException("[!] Failed to get projects.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -26,17 +26,17 @@ class Project:
         :return: response from TestRail API containing the project
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         try:
             result = self.client.send_get("get_project/{}".format(project_id))
-        except TestRailException("[!] Failed to get project.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -51,7 +51,7 @@ class Project:
         :return: response from TestRail API containing the newly created project
         """
         if not name or name is None:
-            raise TestRailValidationException("[*] Invalid project name. Unable to create new project.")
+            raise APIValidationError("[*] Invalid project name. Unable to create new project.")
 
         proj_data = dict(
             name                = name,
@@ -62,7 +62,7 @@ class Project:
 
         try:
             result = self.client.send_post("add_project", proj_data)
-        except TestRailException("[!] Failed to add new project.") as error:
+        except APIError as error:
             raise error
         else:
             return result

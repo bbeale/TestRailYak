@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class Section:
@@ -18,30 +18,30 @@ class Section:
         :return: response from TestRail API containing the collection of sections
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         if suite_id is not None:
             if type(suite_id) not in [int, float]:
-                raise TestRailValidationException("[*] suite_id must be an int or float")
+                raise APIValidationError("[*] suite_id must be an int or float")
 
             if suite_id <= 0:
-                raise TestRailValidationException("[*] suite_id must be > 0")
+                raise APIValidationError("[*] suite_id must be > 0")
 
             try:
                 result = self.client.send_get("get_sections/{}&suite_id={}".format(project_id, suite_id))
-            except TestRailException("[!] Failed to get sections.") as error:
+            except APIError as error:
                 raise error
 
         else:
             try:
                 result = self.client.send_get("get_sections/{}".format(project_id))
-            except TestRailException("[!] Failed to get sections.") as error:
+            except APIError as error:
                 raise error
 
         return result
@@ -53,17 +53,17 @@ class Section:
         :return: response from TestRail API containing the test section
         """
         if not section_id or section_id is None:
-            raise TestRailValidationException("[*] Invalid section_id")
+            raise APIValidationError("[*] Invalid section_id")
 
         if type(section_id) not in [int, float]:
-            raise TestRailValidationException("[*] section_id must be an int or float")
+            raise APIValidationError("[*] section_id must be an int or float")
 
         if section_id <= 0:
-            raise TestRailValidationException("[*] section_id must be > 0")
+            raise APIValidationError("[*] section_id must be > 0")
 
         try:
             result = self.client.send_get("get_section/{}".format(section_id))
-        except TestRailException("[!] Failed to get sections.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -85,16 +85,16 @@ class Section:
             raise NotImplementedError("Not currently using suite_id in this call")
 
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestRailValidationException("[*] Name field is required")
+            raise APIValidationError("[*] Name field is required")
 
         sect_data = dict(
             name=name,
@@ -103,7 +103,7 @@ class Section:
 
         try:
             result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-        except TestRailException("[!] Failed to add new sprint section.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -124,16 +124,16 @@ class Section:
         :return: response from TestRail API containing the newly created test section
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestRailValidationException("[*] Name field is required")
+            raise APIValidationError("[*] Name field is required")
 
         sect_data = dict(
             parent_id=parent_id,
@@ -143,7 +143,7 @@ class Section:
 
         try:
             result = self.client.send_post("add_section/{}".format(project_id), sect_data)
-        except TestRailException("[!] Failed to add new story section.") as error:
+        except APIError as error:
             raise error
         else:
             return result

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .exception import TestRailException, TestRailValidationException
+from .testrail import APIError, APIValidationError
 
 
 class TestSuite:
@@ -17,17 +17,17 @@ class TestSuite:
         :return: response from TestRail API containing the test suites
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         try:
             result = self.client.send_get("get_suites/{}".format(project_id))
-        except TestRailException("[!] Failed to get test suites.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -39,17 +39,17 @@ class TestSuite:
         :return: response from TestRail API containing the test suites
         """
         if not suite_id or suite_id is None:
-            raise TestRailValidationException("[*] Invalid suite_id")
+            raise APIValidationError("[*] Invalid suite_id")
 
         if type(suite_id) not in [int, float]:
-            raise TestRailValidationException("[*] suite_id must be an int or float")
+            raise APIValidationError("[*] suite_id must be an int or float")
 
         if suite_id <= 0:
-            raise TestRailValidationException("[*] suite_id must be > 0")
+            raise APIValidationError("[*] suite_id must be > 0")
 
         try:
             result = self.client.send_get("get_suite/{}".format(suite_id))
-        except TestRailException("[!] Failed to get test suite.") as error:
+        except APIError as error:
             raise error
         else:
             return result
@@ -63,25 +63,25 @@ class TestSuite:
         :return: response from TestRail API containing the newly created test suite
         """
         if not project_id or project_id is None:
-            raise TestRailValidationException("[*] Invalid project_id")
+            raise APIValidationError("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestRailValidationException("[*] project_id must be an int or float")
+            raise APIValidationError("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestRailValidationException("[*] project_id must be > 0")
+            raise APIValidationError("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestRailValidationException("[*] Invalid suite name. Unable to add test suite.")
+            raise APIValidationError("[*] Invalid suite name. Unable to add test suite.")
 
         if not description or description is None:
-            raise TestRailValidationException("[*] Invalid description. Unable to add test suite.")
+            raise APIValidationError("[*] Invalid description. Unable to add test suite.")
 
         data = dict(name=name, description=description)
 
         try:
             result = self.client.send_post("add_suite/{}".format(project_id), data)
-        except TestRailException("[!] Failed to add new test suite.") as error:
+        except APIError as error:
             raise error
         else:
             return result
