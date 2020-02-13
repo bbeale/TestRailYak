@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import setuptools
 from textwrap import dedent
+import setuptools
 
 
 setuptools.setup(
       name="testrail_yak",
-      version="1.0.2",
+      version="1.0.3",
       packages=["testrail_yak"],
       classifiers=[
             "Programming Language :: Python :: 3",
@@ -14,7 +14,7 @@ setuptools.setup(
             "Operating System :: OS Independent",
       ],
       license=dedent("""\
-      Copyright (c) 2019 bbeale
+      Copyright (c) 2020 bbeale
 
       Permission is hereby granted, free of charge, to any person obtaining a copy
       of this software and associated documentation files (the "Software"), to deal
@@ -47,5 +47,5 @@ setuptools.setup(
       author_email="beale.ben@gmail.com",
       url="https://github.com/bbeale/TestRailYak",
       setup_requires=["wheel", "setuptools"],
-      requires=["urllib3"]
+      requires=["urllib3", "requests"]
       )
