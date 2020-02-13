@@ -1,10 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import requests
-import json, base64
+import base64
+import json
 
 """
-	Python class from gurock's repository. Only modifications here are formatting related to be consistent with the rest of my project.
+	Python class from gurock's Python SDK: https://github.com/gurock/testrail-api
+	
+	My own modifications include:
+		- making formatting consistent with the rest of my project.
+	
+	And most importantly:
+		- swapping out urllib for requests cuz it's 9,612,984,987 times better (I forgot to mention that somewhere in a comment before)
+	
 """
 
 
@@ -19,7 +27,6 @@ class APIClient:
 
 	Copyright Gurock Software GmbH. See license.md for details.
 	"""
-
 	def __init__(self, base_url):
 		self.user = ''
 		self.password = ''
@@ -29,25 +36,23 @@ class APIClient:
 
 	def send_get(self, uri, filepath=None):
 		"""Issue a GET request (read) against the API.
-        Args:
-            uri: The API method to call including parameters, e.g. get_case/1.
-            filepath: The path and file name for attachment download; used only
-                for 'get_attachment/:attachment_id'.
-        Returns:
-            A dict containing the result of the request.
-        """
+
+		:param uri: The API method to call including parameters, e.g. get_case/1.
+		:param filepath: The path and file name for attachment download; used only
+		for 'get_attachment/:attachment_id'.
+		:return: A dict containing the result of the request.
+		"""
 		return self.__send_request('GET', uri, filepath)
 
 	def send_post(self, uri, data):
 		"""Issue a POST request (write) against the API.
-        Args:
-            uri: The API method to call, including parameters, e.g. add_case/1.
-            data: The data to submit as part of the request as a dict; strings
-                must be UTF-8 encoded. If adding an attachment, must be the
-                path to the file.
-        Returns:
-            A dict containing the result of the request.
-        """
+
+		:param uri: The API method to call, including parameters, e.g. add_case/1.
+		:param data: The data to submit as part of the request as a dict; strings
+				must be UTF-8 encoded. If adding an attachment, must be the
+				path to the file.
+		:return: A dict containing the result of the request.
+		"""
 		return self.__send_request('POST', uri, data)
 
 	def __send_request(self, method, uri, data):
