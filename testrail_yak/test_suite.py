@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailException, ValidationException
-import time
-
-
-class TestSuiteException(TestRailException):
-    pass
-
-
-class TestSuiteValidationException(ValidationException):
-    pass
+from .exception import TestRailException, TestRailValidationException
 
 
 class TestSuite:
@@ -26,25 +17,19 @@ class TestSuite:
         :return: response from TestRail API containing the test suites
         """
         if not project_id or project_id is None:
-            raise TestSuiteValidationException("[*] Invalid project_id")
+            raise TestRailValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestSuiteValidationException("[*] project_id must be an int or float")
+            raise TestRailValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestSuiteValidationException("[*] project_id must be > 0")
+            raise TestRailValidationException("[*] project_id must be > 0")
 
-        result = None
         try:
             result = self.client.send_get("get_suites/{}".format(project_id))
-        except TestSuiteException:
-            print("[!] Failed to get test suites. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_suites/{}".format(project_id))
-            except TestSuiteException:
-                print("[!] Failed to get test suites.")
-        finally:
+        except TestRailException("[!] Failed to get test suites.") as error:
+            raise error
+        else:
             return result
 
     def get_test_suite(self, suite_id):
@@ -54,25 +39,19 @@ class TestSuite:
         :return: response from TestRail API containing the test suites
         """
         if not suite_id or suite_id is None:
-            raise TestSuiteValidationException("[*] Invalid suite_id")
+            raise TestRailValidationException("[*] Invalid suite_id")
 
         if type(suite_id) not in [int, float]:
-            raise TestSuiteValidationException("[*] suite_id must be an int or float")
+            raise TestRailValidationException("[*] suite_id must be an int or float")
 
         if suite_id <= 0:
-            raise TestSuiteValidationException("[*] suite_id must be > 0")
+            raise TestRailValidationException("[*] suite_id must be > 0")
 
-        result = None
         try:
             result = self.client.send_get("get_suite/{}".format(suite_id))
-        except TestSuiteException:
-            print("[!] Failed to get test suites. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_suite/{}".format(suite_id))
-            except TestSuiteException:
-                print("[!] Failed to get test suites.")
-        finally:
+        except TestRailException("[!] Failed to get test suite.") as error:
+            raise error
+        else:
             return result
 
     def add_test_suite(self, project_id, name, description):
@@ -84,31 +63,25 @@ class TestSuite:
         :return: response from TestRail API containing the newly created test suite
         """
         if not project_id or project_id is None:
-            raise TestSuiteValidationException("[*] Invalid project_id")
+            raise TestRailValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise TestSuiteValidationException("[*] project_id must be an int or float")
+            raise TestRailValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise TestSuiteValidationException("[*] project_id must be > 0")
+            raise TestRailValidationException("[*] project_id must be > 0")
 
         if not name or name is None:
-            raise TestSuiteValidationException("[*] Invalid suite name. Unable to add test suite.")
+            raise TestRailValidationException("[*] Invalid suite name. Unable to add test suite.")
 
         if not description or description is None:
-            raise TestSuiteValidationException("[*] Invalid description. Unable to add test suite.")
+            raise TestRailValidationException("[*] Invalid description. Unable to add test suite.")
 
         data = dict(name=name, description=description)
 
-        result = None
         try:
             result = self.client.send_post("add_suite/{}".format(project_id), data)
-        except TestSuiteException:
-            print("[!] Failed to add test suite. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_post("add_suite/{}".format(project_id), data)
-            except TestSuiteException:
-                print("[!] Failed to add test suite.")
-        finally:
+        except TestRailException("[!] Failed to add new test suite.") as error:
+            raise error
+        else:
             return result

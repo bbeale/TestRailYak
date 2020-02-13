@@ -8,5 +8,5 @@ class TestRailException(APIError):
     pass
 
 
-class ValidationException(ValueError):
+class TestRailValidationException(TestRailException, ValueError):
     pass

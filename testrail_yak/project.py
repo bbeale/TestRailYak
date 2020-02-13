@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailException, ValidationException
-import time
-
-
-class ProjectException(TestRailException):
-    pass
-
-
-class ProjectValidationException(ValidationException):
-    pass
+from .exception import TestRailException, TestRailValidationException
 
 
 class Project:
@@ -21,17 +12,11 @@ class Project:
 
     def get_projects(self):
         """Get all projects from the TestRail API."""
-        result = None
         try:
             result = self.client.send_get("get_projects")
-        except ProjectException:
-            print("[!] Failed to get projects. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_projects")
-            except ProjectException:
-                print("[!] Failed to get projects.")
-        finally:
+        except TestRailException("[!] Failed to get projects.") as error:
+            raise error
+        else:
             return result
 
     def get_project(self, project_id):
@@ -41,25 +26,19 @@ class Project:
         :return: response from TestRail API containing the project
         """
         if not project_id or project_id is None:
-            raise ProjectValidationException("[*] Invalid project_id")
+            raise TestRailValidationException("[*] Invalid project_id")
 
         if type(project_id) not in [int, float]:
-            raise ProjectValidationException("[*] project_id must be an int or float")
+            raise TestRailValidationException("[*] project_id must be an int or float")
 
         if project_id <= 0:
-            raise ProjectValidationException("[*] project_id must be > 0")
+            raise TestRailValidationException("[*] project_id must be > 0")
 
-        result = None
         try:
             result = self.client.send_get("get_project/{}".format(project_id))
-        except ProjectException:
-            print("[!] Failed to get project. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_project/{}".format(project_id))
-            except ProjectException:
-                print("[!] Failed to get project.")
-        finally:
+        except TestRailException("[!] Failed to get project.") as error:
+            raise error
+        else:
             return result
 
     def add_project(self, name, announcement=None, show_announcement=True, suite_mode=1):
@@ -72,7 +51,7 @@ class Project:
         :return: response from TestRail API containing the newly created project
         """
         if not name or name is None:
-            raise ProjectValidationException("[*] Invalid project name. Unable to create new project.")
+            raise TestRailValidationException("[*] Invalid project name. Unable to create new project.")
 
         proj_data = dict(
             name                = name,
@@ -81,15 +60,9 @@ class Project:
             suite_mode          = suite_mode
         )
 
-        result = None
         try:
             result = self.client.send_post("add_project", proj_data)
-        except ProjectException:
-            print("[!] Failed to add project. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_post("add_project", proj_data)
-            except ProjectException:
-                print("[!] Failed to add project.")
-        finally:
+        except TestRailException("[!] Failed to add new project.") as error:
+            raise error
+        else:
             return result

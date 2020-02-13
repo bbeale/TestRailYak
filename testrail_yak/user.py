@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailException, ValidationException
-import time
-
-
-class UserException(TestRailException):
-    pass
-
-
-class UserValidationException(ValidationException):
-    pass
+from .exception import TestRailException, TestRailValidationException
 
 
 class User:
@@ -24,17 +15,11 @@ class User:
 
         :return: response from TestRail API containing the user collection
         """
-        result = None
         try:
             result = self.client.send_get("get_users")
-        except UserException:
-            print("[!] Failed to get users. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_users")
-            except UserException:
-                print("[!] Failed to get users.")
-        finally:
+        except TestRailException("[!] Failed to get users.") as error:
+            raise error
+        else:
             return result
 
     def get_user(self, user_id):
@@ -44,17 +29,11 @@ class User:
         :return: response from TestRail API containing the user
         """
         if not user_id or user_id is None:
-            raise UserValidationException("[*] Invalid user_id")
+            raise TestRailValidationException("[!] Invalid user_id")
 
-        result = None
         try:
             result = self.client.send_get("get_user/{}".format(user_id))
-        except UserException:
-            print("[!] Failed to get user. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_user/{}".format(user_id))
-            except UserException:
-                print("[!] Failed to get user.")
-        finally:
+        except TestRailException("[!] Failed to get user.") as error:
+            raise error
+        else:
             return result

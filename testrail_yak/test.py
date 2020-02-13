@@ -1,15 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail_exception import TestRailException, ValidationException
-import time
-
-
-class TestException(TestRailException):
-    pass
-
-
-class TestValidationException(ValidationException):
-    pass
+from .exception import TestRailException, TestRailValidationException
 
 
 class Test:
@@ -26,25 +17,19 @@ class Test:
         :return: response from TestRail API containing the test cases
         """
         if not run_id or run_id is None:
-            raise TestValidationException("[*] Invalid run_id")
+            raise TestRailValidationException("[*] Invalid run_id")
 
         if type(run_id) not in [int, float]:
-            raise TestValidationException("[*] run_id must be an int or float")
+            raise TestRailValidationException("[*] run_id must be an int or float")
 
         if run_id <= 0:
-            raise TestValidationException("[*] run_id must be > 0")
+            raise TestRailValidationException("[*] run_id must be > 0")
 
-        result = None
         try:
             result = self.client.send_get("get_tests/{}".format(run_id))
-        except TestException:
-            print("[!] Failed to get tests from test run. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_tests/{}".format(run_id))
-            except TestException:
-                print("[!] Failed to get tests from test run.")
-        finally:
+        except TestRailException("[!] Failed to get tests from test run.") as error:
+            raise error
+        else:
             return result
 
     def get_test_run_test(self, test_id):
@@ -54,23 +39,17 @@ class Test:
         :return: response from TestRail API containing the test
         """
         if not test_id or test_id is None:
-            raise TestValidationException("[*] Invalid test_id")
+            raise TestRailValidationException("[*] Invalid test_id")
 
         if type(test_id) not in [int, float]:
-            raise TestValidationException("[*] test_id must be an int or float")
+            raise TestRailValidationException("[*] test_id must be an int or float")
 
         if test_id <= 0:
-            raise TestValidationException("[*] test_id must be > 0")
+            raise TestRailValidationException("[*] test_id must be > 0")
 
-        result = None
         try:
             result = self.client.send_get("get_test/{}".format(test_id))
-        except TestException:
-            print("[!] Failed to get individual test. Retrying")
-            time.sleep(3)
-            try:
-                result = self.client.send_get("get_test/{}".format(test_id))
-            except TestException:
-                print("[!] Failed to get individual test.")
-        finally:
+        except TestRailException("[!] Failed to get test from test run.") as error:
+            raise error
+        else:
             return result
