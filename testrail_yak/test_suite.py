@@ -9,6 +9,9 @@ class TestSuite:
 
     def __init__(self, api):
         self.client = api
+        self._fields = [
+            "description"
+        ]
 
     def get_test_suites(self, project_id):
         """Get a list of test suites associated with a given project_id.
@@ -54,12 +57,12 @@ class TestSuite:
         else:
             return result
 
-    def add_test_suite(self, project_id, name, description):
+    def add_test_suite(self, project_id, name, data):
         """Add a new test suite to a TestRail project.
 
         :param project_id: ID of the TestRail project
         :param name: name of the new TestRail test suite
-        :param description: description of the test suite
+        :param data: request data dictionary
         :return: response from TestRail API containing the newly created test suite
         """
         if not project_id or project_id is None:
@@ -74,10 +77,7 @@ class TestSuite:
         if not name or name is None:
             raise APIValidationError("[*] Invalid suite name. Unable to add test suite.")
 
-        if not description or description is None:
-            raise APIValidationError("[*] Invalid description. Unable to add test suite.")
-
-        data = dict(name=name, description=description)
+        data = self._validate_data(data)
 
         try:
             result = self.client.send_post("add_suite/{}".format(project_id), data)
@@ -85,3 +85,26 @@ class TestSuite:
             raise error
         else:
             return result
+
+    def _validate_data(self, data_dict):
+        """Field validation static method that I may pull out and use everywhere if it works well.
+
+        :param data_dict:
+        :return:
+        """
+        def _valid_key(field):
+            return field in self._fields
+
+        def _valid_value(value):
+            return value is not None and value is not ""
+
+        _valid = dict()
+        for k, v in data_dict.items():
+
+            print("[debug] Valid key:\t", _valid_key(k),
+                  "\tValid value:\t", _valid_value(v))
+
+            if _valid_key(k) and _valid_value(v):
+                _valid[k] = v
+
+        return _valid
