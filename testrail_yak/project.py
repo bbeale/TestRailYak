@@ -9,6 +9,11 @@ class Project:
 
     def __init__(self, api):
         self.client = api
+        self._fields = [
+            "announcement",
+            "show_announcement",
+            "suite_mode"
+        ]
 
     def get_projects(self):
         """Get all projects from the TestRail API."""
@@ -41,24 +46,17 @@ class Project:
         else:
             return result
 
-    def add_project(self, name, announcement=None, show_announcement=True, suite_mode=1):
+    def add_project(self, name, data):
         """Add a new project to TestRail.
 
         :param name: name of the new TestRail project
-        :param announcement: brief description of the TestRail project
-        :param show_announcement: a truthy value or True show the announcement, a falsey value or False hides it
-        :param suite_mode: suite mode of the project (1 for single suite mode, 2 for single suite + baselines, 3 for multiple suites)
+        :param data: request data dictionary
         :return: response from TestRail API containing the newly created project
         """
         if not name or name is None:
             raise APIValidationError("[*] Invalid project name. Unable to create new project.")
 
-        proj_data = dict(
-            name                = name,
-            announcement        = announcement,
-            show_announcement   = show_announcement,
-            suite_mode          = suite_mode
-        )
+        proj_data = self._validate_data(data)
 
         try:
             result = self.client.send_post("add_project", proj_data)
@@ -66,3 +64,43 @@ class Project:
             raise error
         else:
             return result
+
+    def update_project(self, project_id, data, name=None, is_completed=False):
+
+        if not project_id or project_id is None:
+            raise APIValidationError("[*] Invalid project_id")
+
+        proj_data = self._validate_data(data)
+
+        raise NotImplementedError
+
+    def delete_project(self, project_id):
+
+        if not project_id or project_id is None:
+            raise APIValidationError("[*] Invalid project_id")
+
+        raise NotImplementedError
+
+    def _validate_data(self, data_dict):
+        """Field validation static method that I may pull out and use everywhere if it works well.
+
+        :param data_dict:
+        :return:
+        """
+
+        def _valid_key(field):
+            return field in self._fields
+
+        def _valid_value(value):
+            return value is not None and value is not ""
+
+        _valid = dict()
+        for k, v in data_dict.items():
+
+            print("[debug] Valid key:\t", _valid_key(k),
+                  "\tValid value:\t", _valid_value(v))
+
+            if _valid_key(k) and _valid_value(v):
+                _valid[k] = v
+
+        return _valid

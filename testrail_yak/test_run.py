@@ -9,6 +9,13 @@ class TestRun:
 
     def __init__(self, api):
         self.client = api
+        self._fields = [
+            "description",
+            "milestone_id",
+            "include_all",
+            "case_ids",
+            "refs"
+        ]
 
     def get_test_runs(self, project_id):
         """Get a list of test runs associated with a given project_id.
@@ -54,7 +61,7 @@ class TestRun:
         else:
             return result
 
-    def add_test_run(self, project_id, name):
+    def add_test_run(self, project_id, name, data):
         """Add a test run to a project.
 
         Supported fields:
@@ -85,7 +92,8 @@ class TestRun:
                 A comma-separated list of references/requirements
 
         :param project_id: ID of the TestRail project
-        :param name: name of the test case
+        :param name:
+        :param data: request data dictionary
         :return: response from TestRail API containing the newly created test run
         """
         if not project_id or project_id is None:
@@ -100,7 +108,10 @@ class TestRun:
         if not name or name is None:
             raise APIValidationError("[*] Test run name value required.")
 
-        data = dict(name=name, include_all=True)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
+
+        data = self._validate_data(data)
 
         try:
             result = self.client.send_post("add_run/{}".format(project_id), data)
@@ -109,7 +120,7 @@ class TestRun:
         else:
             return result
 
-    def update_test_run(self, run_id, data):
+    def update_test_run(self, run_id, data, name=None):
         """Update a test run in a project.
 
         Supported fields:
@@ -133,7 +144,8 @@ class TestRun:
                 A comma-separated list of references/requirements
 
         :param run_id:
-        :param data:
+        :param data: request data dictionary
+        :param name:
         :return:
         """
         if not run_id or run_id is None:
@@ -145,19 +157,13 @@ class TestRun:
         if run_id <= 0:
             raise APIValidationError("[*] run_id must be > 0.")
 
-        supported_fields = [
-            "name",
-            "description",
-            "milestone_id",
-            "include_all",
-            "case_ids",
-            "refs"
-        ]
-
         if not data or data is None:
             raise APIValidationError("[*] data cannot be empty")
 
-        data = self._validate_data(data, supported_fields)
+        data = self._validate_data(data)
+
+        if name is not None:
+            data["name"] = name
 
         try:
             result = self.client.send_post("update_run/{}".format(run_id), data)
@@ -210,16 +216,14 @@ class TestRun:
         else:
             return result
 
-    @staticmethod
-    def _validate_data(data_dict, field_list):
+    def _validate_data(self, data_dict):
         """Field validation static method that I may pull out and use everywhere if it works well.
 
         :param data_dict:
-        :param field_list:
         :return:
         """
         def _valid_key(field):
-            return field in field_list
+            return field in self._fields
 
         def _valid_value(value):
             return value is not None and value is not ""
