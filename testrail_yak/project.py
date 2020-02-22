@@ -15,6 +15,27 @@ class Project:
             "suite_mode"
         ]
 
+    def _suite_mode(self, project_id):
+        """Figure out the suite_mode value of a given project.
+
+        :param project_id: project ID of the TestRail project
+        :return: response from TestRail API containing the project
+        """
+        if not project_id or project_id is None:
+            raise APIValidationError("[*] Invalid project_id")
+        if type(project_id) not in [int, float]:
+            raise APIValidationError("[*] project_id must be an int or float")
+        if project_id <= 0:
+            raise APIValidationError("[*] project_id must be > 0")
+
+        try:
+            p = self.get_project(project_id)
+        except APIError as error:
+            raise error
+        else:
+            sadf = p["suite_mode"]
+            return sadf
+
     def get_projects(self):
         """Get all projects from the TestRail API."""
         try:
@@ -97,8 +118,8 @@ class Project:
         _valid = dict()
         for k, v in data_dict.items():
 
-            print("[debug] Valid key:\t", _valid_key(k),
-                  "\tValid value:\t", _valid_value(v))
+            # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
+            #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
 
             if _valid_key(k) and _valid_value(v):
                 _valid[k] = v

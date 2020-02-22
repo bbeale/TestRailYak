@@ -10,7 +10,6 @@ class Section:
         self.client = api
         self._fields = [
             "name",
-            "description"
         ]
 
     def get_sections(self, project_id, suite_id=None):
@@ -185,8 +184,8 @@ class Section:
         _valid = dict()
         for k, v in data_dict.items():
 
-            print("[debug] Valid key:\t", _valid_key(k),
-                  "\tValid value:\t", _valid_value(v))
+            # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
+            #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
 
             if _valid_key(k) and _valid_value(v):
                 _valid[k] = v
