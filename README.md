@@ -4,9 +4,9 @@ A Python library for interacting with the TestRail REST API.
 
 Essentially, another layer on top of gurock's Python interface: https://github.com/gurock/testrail-api.git
 
-Install:
+Install (dev version):
 
-`pip install testrail_yak`
+`pip install -i https://test.pypi.org/simple/ testrail-yak`
 
 Use:
 
