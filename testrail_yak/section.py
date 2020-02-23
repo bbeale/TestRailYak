@@ -1,6 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .testrail import APIError, APIValidationError
+from marshmallow import Schema, fields, ValidationError
+
+
+class SectionSchema(Schema):
+
+    description     = fields.Str()
+    suite_id        = fields.Int()
+    parent_id       = fields.Int()
+    name            = fields.Str()
 
 
 class Section:
@@ -8,9 +17,9 @@ class Section:
 
     def __init__(self, api):
         self.client = api
-        self._fields = [
-            "name",
-        ]
+        # self._fields = [
+        #     "name",
+        # ]
 
     def get_sections(self, project_id, suite_id=None):
         """Get a list of test sections associated with a project_id and an optional suite_id
@@ -90,10 +99,19 @@ class Section:
         if project_id <= 0:
             raise APIValidationError("[*] project_id must be > 0")
 
-        sect_data = self._validate_data(data)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
+
+        # sect_data = self._validate_data(data)
 
         try:
-            result = self.client.send_post("add_section/{}".format(project_id), sect_data)
+            data = SectionSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        try:
+            result = self.client.send_post("add_section/{}".format(project_id), data)
         except APIError as error:
             raise error
         else:
@@ -122,19 +140,39 @@ class Section:
         if project_id <= 0:
             raise APIValidationError("[*] project_id must be > 0")
 
-        sect_data = self._validate_data(data)
+        if not parent_id or parent_id is None:
+            raise APIValidationError("[*] Valid parent_id required for adding a story.")
 
-        if parent_id is not None:
-            if type(parent_id) not in [int, float]:
-                raise APIValidationError("[*] parent_id must be an int or float")
+        if type(parent_id) not in [int, float]:
+            raise APIValidationError("[*] parent_id must be an int or float")
 
-            if parent_id <= 0:
-                raise APIValidationError("[*] parent_id must be > 0")
+        if parent_id <= 0:
+            raise APIValidationError("[*] parent_id must be > 0")
 
-            sect_data["parent_id"] = parent_id
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
+
+        # sect_data = self._validate_data(data)
+
+        # if parent_id is not None:
+        #     if type(parent_id) not in [int, float]:
+        #         raise APIValidationError("[*] parent_id must be an int or float")
+        #
+        #     if parent_id <= 0:
+        #         raise APIValidationError("[*] parent_id must be > 0")
+        #
+        #     sect_data["parent_id"] = parent_id
+
+        data["parent_id"] = parent_id
 
         try:
-            result = self.client.send_post("add_section/{}".format(project_id), sect_data)
+            data = SectionSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        try:
+            result = self.client.send_post("add_section/{}".format(project_id), data)
         except APIError as error:
             raise error
         else:
@@ -151,9 +189,23 @@ class Section:
         if section_id <= 0:
             raise APIValidationError("[*] section_id must be > 0")
 
-        sect_data = self._validate_data(data)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
 
-        raise NotImplementedError
+        try:
+            data = SectionSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        # raise NotImplementedError
+
+        try:
+            result = self.client.send_post("update_section/{}".format(section_id), data)
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def delete_section(self, section_id):
 
@@ -166,28 +218,35 @@ class Section:
         if section_id <= 0:
             raise APIValidationError("[*] section_id must be > 0")
 
-        raise NotImplementedError
+        # raise NotImplementedError
 
-    def _validate_data(self, data_dict):
-        """Field validation static method that I may pull out and use everywhere if it works well.
+        try:
+            result = self.client.send_post("delete_section/{}".format(section_id))
+        except APIError as error:
+            raise error
+        else:
+            return result
 
-        :param data_dict:
-        :return:
-        """
-
-        def _valid_key(field):
-            return field in self._fields
-
-        def _valid_value(value):
-            return value is not None and value is not ""
-
-        _valid = dict()
-        for k, v in data_dict.items():
-
-            # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
-            #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
-
-            if _valid_key(k) and _valid_value(v):
-                _valid[k] = v
-
-        return _valid
+    # def _validate_data(self, data_dict):
+    #     """Field validation static method that I may pull out and use everywhere if it works well.
+    #
+    #     :param data_dict:
+    #     :return:
+    #     """
+    #
+    #     def _valid_key(field):
+    #         return field in self._fields
+    #
+    #     def _valid_value(value):
+    #         return value is not None and value is not ""
+    #
+    #     _valid = dict()
+    #     for k, v in data_dict.items():
+    #
+    #         # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
+    #         #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
+    #
+    #         if _valid_key(k) and _valid_value(v):
+    #             _valid[k] = v
+    #
+    #     return _valid

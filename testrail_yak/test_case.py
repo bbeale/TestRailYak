@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .testrail import APIError, APIValidationError
+from marshmallow import Schema, fields, ValidationError
+
+
+class TestCaseSchema(Schema):
+
+    title           = fields.Str()
+    template_id     = fields.Int()
+    type_id         = fields.Int()
+    priority_id     = fields.Int()
+    estimate        = fields.Str()
+    milestone_id    = fields.Int()
+    refs            = fields.Str()
 
 
 class TestCase:
@@ -9,15 +21,15 @@ class TestCase:
 
     def __init__(self, api):
         self.client = api
-        self._fields = [
-            "title",
-            "template_id",
-            "type_id",
-            "priority_id",
-            "estimate",
-            "milestone_id",
-            "refs",
-        ]
+        # self._fields = [
+        #     "title",
+        #     "template_id",
+        #     "type_id",
+        #     "priority_id",
+        #     "estimate",
+        #     "milestone_id",
+        #     "refs",
+        # ]
 
     def get_test_cases(self, project_id):
         """Get a list of test cases associated with a given project_id.
@@ -83,8 +95,17 @@ class TestCase:
         if not title or title is None:
             raise APIValidationError("[*] Test case title required.")
 
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
+
         data["title"] = title
-        data = self._validate_data(data)
+        # data = self._validate_data(data)
+
+        try:
+            data = TestCaseSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
 
         try:
             result = self.client.send_post("add_case/{}".format(section_id), data)
@@ -93,26 +114,92 @@ class TestCase:
         else:
             return result
 
-    def _validate_data(self, data_dict):
-        """Field validation static method that I may pull out and use everywhere if it works well.
+    def update_test_case(self, case_id, data):
+        """Update a test case.
 
-        :param data_dict:
-        :return:
+        :param case_id: ID of the test case
+        :param data:
+        :return: response from TestRail API containing the newly updated test case
         """
+        if not case_id or case_id is None:
+            raise APIValidationError("[*] Invalid case_id.")
 
-        def _valid_key(field):
-            return field in self._fields
+        if type(case_id) not in [int, float]:
+            raise APIValidationError("[*] case_id must be an int or float.")
 
-        def _valid_value(value):
-            return value is not None and value is not ""
+        if case_id <= 0:
+            raise APIValidationError("[*] section_id must be > 0.")
 
-        _valid = dict()
-        for k, v in data_dict.items():
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
 
-            # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
-            #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
+        # if not title or title is None:
+        #     raise APIValidationError("[*] Test case title required.")
 
-            if _valid_key(k) and _valid_value(v):
-                _valid[k] = v
+        # data["title"] = title
+        # data = self._validate_data(data)
 
-        return _valid
+        try:
+            data = TestCaseSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        try:
+            result = self.client.send_post("update_case/{}".format(case_id), data)
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+    def delete_test_case(self, case_id):
+        """Delete a test case.
+
+        :param case_id: ID of the test case
+        :return: response from TestRail API containing the newly updated test case
+        """
+        if not case_id or case_id is None:
+            raise APIValidationError("[*] Invalid case_id.")
+
+        if type(case_id) not in [int, float]:
+            raise APIValidationError("[*] case_id must be an int or float.")
+
+        if case_id <= 0:
+            raise APIValidationError("[*] section_id must be > 0.")
+
+        # if not title or title is None:
+        #     raise APIValidationError("[*] Test case title required.")
+
+        # data["title"] = title
+        # data = self._validate_data(data)
+
+        try:
+            result = self.client.send_post("delete_case/{}".format(case_id))
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+    # def _validate_data(self, data_dict):
+    #     """Field validation static method that I may pull out and use everywhere if it works well.
+    #
+    #     :param data_dict:
+    #     :return:
+    #     """
+    #
+    #     def _valid_key(field):
+    #         return field in self._fields
+    #
+    #     def _valid_value(value):
+    #         return value is not None and value is not ""
+    #
+    #     _valid = dict()
+    #     for k, v in data_dict.items():
+    #
+    #         # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
+    #         #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
+    #
+    #         if _valid_key(k) and _valid_value(v):
+    #             _valid[k] = v
+    #
+    #     return _valid

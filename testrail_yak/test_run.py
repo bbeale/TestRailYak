@@ -1,6 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .testrail import APIError, APIValidationError
+from marshmallow import Schema, fields, ValidationError
+
+
+class TestRunSchema(Schema):
+
+    suite_id        = fields.Int()
+    name            = fields.Str()
+    description     = fields.Str()
+    milestone_id    = fields.Int()
+    assignedto_id   = fields.Int()
+    include_all     = fields.Bool()
+    case_ids        = fields.List(fields.Int())
+    refs            = fields.Str()
 
 
 class TestRun:
@@ -9,13 +22,13 @@ class TestRun:
 
     def __init__(self, api):
         self.client = api
-        self._fields = [
-            "description",
-            "milestone_id",
-            "include_all",
-            "case_ids",
-            "refs"
-        ]
+        # self._fields = [
+        #     "description",
+        #     "milestone_id",
+        #     "include_all",
+        #     "case_ids",
+        #     "refs"
+        # ]
 
     def get_test_runs(self, project_id):
         """Get a list of test runs associated with a given project_id.
@@ -111,7 +124,14 @@ class TestRun:
         if not data or data is None:
             raise APIValidationError("[*] data cannot be empty")
 
-        data = self._validate_data(data)
+        # data = self._validate_data(data)
+        data["name"] = name
+
+        try:
+            data = TestRunSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
 
         try:
             result = self.client.send_post("add_run/{}".format(project_id), data)
@@ -160,10 +180,16 @@ class TestRun:
         if not data or data is None:
             raise APIValidationError("[*] data cannot be empty")
 
-        data = self._validate_data(data)
+        # data = self._validate_data(data)
 
         if name is not None:
             data["name"] = name
+
+        try:
+            data = TestRunSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
 
         try:
             result = self.client.send_post("update_run/{}".format(run_id), data)
@@ -216,25 +242,25 @@ class TestRun:
         else:
             return result
 
-    def _validate_data(self, data_dict):
-        """Field validation static method that I may pull out and use everywhere if it works well.
-
-        :param data_dict:
-        :return:
-        """
-        def _valid_key(field):
-            return field in self._fields
-
-        def _valid_value(value):
-            return value is not None and value is not ""
-
-        _valid = dict()
-        for k, v in data_dict.items():
-
-            print("[debug] Valid key:\t", _valid_key(k),
-                  "\tValid value:\t", _valid_value(v))
-
-            if _valid_key(k) and _valid_value(v):
-                _valid[k] = v
-
-        return _valid
+    # def _validate_data(self, data_dict):
+    #     """Field validation static method that I may pull out and use everywhere if it works well.
+    #
+    #     :param data_dict:
+    #     :return:
+    #     """
+    #     def _valid_key(field):
+    #         return field in self._fields
+    #
+    #     def _valid_value(value):
+    #         return value is not None and value is not ""
+    #
+    #     _valid = dict()
+    #     for k, v in data_dict.items():
+    #
+    #         print("[debug] Valid key:\t", _valid_key(k),
+    #               "\tValid value:\t", _valid_value(v))
+    #
+    #         if _valid_key(k) and _valid_value(v):
+    #             _valid[k] = v
+    #
+    #     return _valid

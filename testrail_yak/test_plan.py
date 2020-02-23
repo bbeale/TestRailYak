@@ -1,6 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from .testrail import APIError, APIValidationError
+from marshmallow import Schema, fields, ValidationError
+
+
+class TestPlanSchema(Schema):
+
+    name            = fields.Str()
+    description     = fields.Str()
+    milestone_id    = fields.Int()
+    entries         = fields.Dict()
+
+
+class TestPlanEntrySchema(Schema):
+
+    suite_id        = fields.Int()
+    name            = fields.Str()
+    description     = fields.Str()
+    assignedto_id   = fields.Int()
+    include_all     = fields.Bool()
+    case_ids        = fields.List(fields.Int())
+    config_ids      = fields.List(fields.Int())
+    runs            = fields.Dict()
 
 
 class TestPlan:
@@ -9,17 +30,17 @@ class TestPlan:
 
     def __init__(self, api):
         self.client = api
-        self._plan_fields = [
-            "description",
-            "milestone_id"
-        ]
-        self._entry_fields = [
-            "name",
-            "description",
-            "assignedto_id",
-            "include_all",
-            "case_ids",
-        ]
+        # self._plan_fields = [
+        #     "description",
+        #     "milestone_id"
+        # ]
+        # self._entry_fields = [
+        #     "name",
+        #     "description",
+        #     "assignedto_id",
+        #     "include_all",
+        #     "case_ids",
+        # ]
 
     def get_test_plans(self, project_id):
         """Get a list of test plans associated with a given project_id.
@@ -86,10 +107,20 @@ class TestPlan:
         if not name or name is None:
             raise APIValidationError("[*] Test plan name value required.")
 
-        data = self._validate_data(data)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
+
+        # data = self._validate_data(data)
+        data["name"] = name
 
         if entries is not None and len(entries) > 0:
             data["entries"] = entries
+
+        try:
+            data = TestPlanSchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
 
         try:
             result = self.client.send_post("add_plan/{}".format(project_id), data)
@@ -98,7 +129,7 @@ class TestPlan:
         else:
             return result
 
-    def add_plan_entry(self, plan_id, suite_id, name, data):
+    def add_plan_entry(self, plan_id, data):
 
         if not plan_id or plan_id is None:
             raise APIValidationError("[*] Invalid plan_id.")
@@ -109,23 +140,39 @@ class TestPlan:
         if plan_id <= 0:
             raise APIValidationError("[*] plan_id must be > 0.")
 
-        if not suite_id or suite_id is None:
-            raise APIValidationError("[*] Invalid suite_id.")
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
 
-        if type(suite_id) not in [int, float]:
-            raise APIValidationError("[*] suite_id must be an int or float.")
+        # if not suite_id or suite_id is None:
+        #     raise APIValidationError("[*] Invalid suite_id.")
+        #
+        # if type(suite_id) not in [int, float]:
+        #     raise APIValidationError("[*] suite_id must be an int or float.")
+        #
+        # if suite_id <= 0:
+        #     raise APIValidationError("[*] suite_id must be > 0.")
+        #
+        # if not name or name is None:
+        #     raise APIValidationError("[*] Test plan name value required.")
 
-        if suite_id <= 0:
-            raise APIValidationError("[*] suite_id must be > 0.")
+        # data = self._validate_data(data, entry=True)
+        #
+        # raise NotImplementedError
 
-        if not name or name is None:
-            raise APIValidationError("[*] Test plan name value required.")
+        try:
+            data = TestPlanEntrySchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
 
-        data = self._validate_data(data, entry=True)
+        try:
+            result = self.client.send_post("add_plan_entry/{}".format(plan_id), data)
+        except APIError as error:
+            raise error
+        else:
+            return result
 
-        raise NotImplementedError
-
-    def update_plan(self, plan_id, data, name=None):
+    def update_plan(self, plan_id, data):
 
         if not plan_id or plan_id is None:
             raise APIValidationError("[*] Invalid plan_id.")
@@ -136,12 +183,28 @@ class TestPlan:
         if plan_id <= 0:
             raise APIValidationError("[*] plan_id must be > 0.")
 
-        data = self._validate_data(data)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
 
-        if name is not None:
-            data["name"] = name
+        # data = self._validate_data(data)
+        #
+        # if name is not None:
+        #     data["name"] = name
+        #
+        # raise NotImplementedError
 
-        raise NotImplementedError
+        try:
+            data = TestPlanEntrySchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        try:
+            result = self.client.send_post("update_plan/{}".format(plan_id), data)
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def update_plan_entry(self, plan_id, entry_id, data):
 
@@ -163,9 +226,25 @@ class TestPlan:
         if entry_id <= 0:
             raise APIValidationError("[*] entry_id must be > 0.")
 
-        data = self._validate_data(data, entry=True)
+        if not data or data is None:
+            raise APIValidationError("[*] data cannot be empty")
 
-        raise NotImplementedError
+        # data = self._validate_data(data, entry=True)
+        #
+        # raise NotImplementedError
+
+        try:
+            data = TestPlanEntrySchema().load(data, partial=True)
+        except ValidationError as error:
+            print(error.messages)
+            raise error
+
+        try:
+            result = self.client.send_post("update_plan_entry/{}/{}".format(plan_id, entry_id), data)
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def close_plan(self, plan_id):
 
@@ -178,7 +257,14 @@ class TestPlan:
         if plan_id <= 0:
             raise APIValidationError("[*] plan_id must be > 0.")
 
-        raise NotImplementedError
+        # raise NotImplementedError
+
+        try:
+            result = self.client.send_post("close_plan/{}".format(plan_id))
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def delete_plan(self, plan_id):
 
@@ -191,7 +277,14 @@ class TestPlan:
         if plan_id <= 0:
             raise APIValidationError("[*] plan_id must be > 0.")
 
-        raise NotImplementedError
+        # raise NotImplementedError
+
+        try:
+            result = self.client.send_post("delete_plan/{}".format(plan_id))
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def delete_plan_entry(self, plan_id, entry_id):
 
@@ -213,34 +306,41 @@ class TestPlan:
         if entry_id <= 0:
             raise APIValidationError("[*] entry_id must be > 0.")
 
-        raise NotImplementedError
+        # raise NotImplementedError
 
-    def _validate_data(self, data_dict, entry=False):
-        """Field validation static method that I may pull out and use everywhere if it works well.
+        try:
+            result = self.client.send_post("delete_plan_entry/{}/{}".format(plan_id, entry_id))
+        except APIError as error:
+            raise error
+        else:
+            return result
 
-        :param data_dict:
-        :param entry:
-        :return:
-        """
-        if entry is None or type(entry) != bool:
-            raise APIValidationError("[!] caller required for validation.")
-
-        def _valid_key(field):
-            if entry:
-                return field in self._entry_fields
-            else:
-                return field in self._plan_fields
-
-        def _valid_value(value):
-            return value is not None and value is not ""
-
-        _valid = dict()
-        for k, v in data_dict.items():
-
-            print("[debug] Valid key:\t", _valid_key(k),
-                  "\tValid value:\t", _valid_value(v))
-
-            if _valid_key(k) and _valid_value(v):
-                _valid[k] = v
-
-        return _valid
+    # def _validate_data(self, data_dict, entry=False):
+    #     """Field validation static method that I may pull out and use everywhere if it works well.
+    #
+    #     :param data_dict:
+    #     :param entry:
+    #     :return:
+    #     """
+    #     if entry is None or type(entry) != bool:
+    #         raise APIValidationError("[!] caller required for validation.")
+    #
+    #     def _valid_key(field):
+    #         if entry:
+    #             return field in self._entry_fields
+    #         else:
+    #             return field in self._plan_fields
+    #
+    #     def _valid_value(value):
+    #         return value is not None and value is not ""
+    #
+    #     _valid = dict()
+    #     for k, v in data_dict.items():
+    #
+    #         print("[debug] Valid key:\t", _valid_key(k),
+    #               "\tValid value:\t", _valid_value(v))
+    #
+    #         if _valid_key(k) and _valid_value(v):
+    #             _valid[k] = v
+    #
+    #     return _valid
