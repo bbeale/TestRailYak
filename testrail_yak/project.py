@@ -78,6 +78,7 @@ class Project:
             raise APIValidationError("[*] Invalid project name. Unable to create new project.")
 
         proj_data = self._validate_data(data)
+        proj_data["name"] = name
 
         try:
             result = self.client.send_post("add_project", proj_data)
