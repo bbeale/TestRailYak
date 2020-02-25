@@ -108,8 +108,8 @@ class TestRun:
         if not name or name is None:
             raise APIValidationError("[*] Test run name value required.")
 
-        if not data or data is None:
-            raise APIValidationError("[*] data cannot be empty")
+        # if not data or data is None:
+        #     raise APIValidationError("[*] data cannot be empty")
 
         data = self._validate_data(data)
 
@@ -157,8 +157,8 @@ class TestRun:
         if run_id <= 0:
             raise APIValidationError("[*] run_id must be > 0.")
 
-        if not data or data is None:
-            raise APIValidationError("[*] data cannot be empty")
+        # if not data or data is None:
+        #     raise APIValidationError("[*] data cannot be empty")
 
         data = self._validate_data(data)
 
@@ -231,8 +231,8 @@ class TestRun:
         _valid = dict()
         for k, v in data_dict.items():
 
-            print("[debug] Valid key:\t", _valid_key(k),
-                  "\tValid value:\t", _valid_value(v))
+            # print("[debug] Valid key:\t", _valid_key(k),
+            #       "\tValid value:\t", _valid_value(v))
 
             if _valid_key(k) and _valid_value(v):
                 _valid[k] = v
