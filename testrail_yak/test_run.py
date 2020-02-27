@@ -108,10 +108,8 @@ class TestRun:
         if not name or name is None:
             raise APIValidationError("[*] Test run name value required.")
 
-        # if not data or data is None:
-        #     raise APIValidationError("[*] data cannot be empty")
-
         data = self._validate_data(data)
+        data["name"] = name
 
         try:
             result = self.client.send_post("add_run/{}".format(project_id), data)
