@@ -9,6 +9,7 @@ from .test_plan import TestPlan
 from .test_run import TestRun
 from .test_suite import TestSuite
 from .user import User
+from .test_result import TestResult
 
 
 class TestRailYak(APIClient):
@@ -31,3 +32,4 @@ class TestRailYak(APIClient):
         self.test_run           = TestRun(self.client)
         self.test_suite         = TestSuite(self.client)
         self.user               = User(self.client)
+        self.test_result        = TestResult(self.client)
