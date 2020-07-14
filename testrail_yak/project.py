@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import ProjectSchema, ProjectUpdateSchema, SchemaError
 
 
 class Project(object):
@@ -54,7 +54,7 @@ class Project(object):
         """
         try:
             data = ProjectSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -68,7 +68,7 @@ class Project(object):
         """Updates an existing project (admin status required; partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = ProjectUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -86,17 +86,3 @@ class Project(object):
             raise error
         else:
             return result
-
-
-class ProjectSchema(Schema):
-    name                = fields.Str(required=True)
-    announcement        = fields.Str()
-    show_announcement   = fields.Bool()
-    suite_mode          = fields.Int()
-
-
-class ProjectUpdateSchema(Schema):
-    name                = fields.Str()
-    announcement        = fields.Str()
-    show_announcement   = fields.Bool()
-    is_completed        = fields.Bool()

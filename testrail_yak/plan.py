@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import (
+    TestPlanSchema, 
+    TestPlanUpdateSchema, 
+    TestPlanEntrySchema, 
+    TestPlanEntryUpdateSchema, 
+    SchemaError
+)
 
 
 class TestPlan(object):
@@ -46,7 +52,7 @@ class TestPlan(object):
         """
         try:
             data = TestPlanSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -60,7 +66,7 @@ class TestPlan(object):
         """ Adds one or more new test runs to a test plan. """
         try:
             data = TestPlanEntrySchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -74,7 +80,7 @@ class TestPlan(object):
         """Updates an existing test plan (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = TestPlanUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -88,7 +94,7 @@ class TestPlan(object):
         """Updates one or more groups of test runs in a plan (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = TestPlanEntryUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -123,37 +129,3 @@ class TestPlan(object):
             raise error
         else:
             return result
-
-
-class TestPlanSchema(Schema):
-    name            = fields.Str(required=True)
-    description     = fields.Str()
-    milestone_id    = fields.Int()
-    entries         = fields.List(fields.Dict())
-
-
-class TestPlanUpdateSchema(Schema):
-    name            = fields.Str()
-    description     = fields.Str()
-    milestone_id    = fields.Int()
-
-
-class TestPlanEntrySchema(Schema):
-    suite_id        = fields.Int(required=True)
-    name            = fields.Str()
-    description     = fields.Str()
-    assignedto_id   = fields.Int()
-    include_all     = fields.Bool()
-    case_ids        = fields.List(fields.Int())
-    config_ids      = fields.List(fields.Int())
-    refs            = fields.Str()
-    runs            = fields.List(fields.Int())
-
-
-class TestPlanEntryUpdateSchema(Schema):
-    name            = fields.Str()
-    description     = fields.Str()
-    assignedto_id   = fields.Int()
-    include_all     = fields.Bool()
-    case_ids        = fields.List(fields.Int())
-    refs            = fields.Str()

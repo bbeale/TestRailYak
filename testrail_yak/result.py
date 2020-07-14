@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import ResultSchema, TestCaseResultSchema, SchemaError
 
 
 class TestResult:
@@ -58,7 +58,7 @@ class TestResult:
         """
         try:
             data = ResultSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -75,7 +75,7 @@ class TestResult:
         """
         try:
             data = TestCaseResultSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -90,21 +90,3 @@ class TestResult:
 
     def add_testcase_results(self, run_id: int):
         raise NotImplemented
-
-
-class ResultSchema(Schema):
-    status_id       = fields.Int(required=True)
-    comment         = fields.Str()
-    version         = fields.Str()
-    elapsed         = fields.Str()
-    defects         = fields.Str()
-    assignedto_id   = fields.Int()
-
-
-class TestCaseResultSchema(Schema):
-    status_id       = fields.Int(required=True)
-    comment         = fields.Str()
-    version         = fields.Str()
-    elapsed         = fields.Str()
-    defects         = fields.Str()
-    assignedto_id   = fields.Int()

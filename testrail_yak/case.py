@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import TestCaseSchema, TestCaseUpdateSchema, SchemaError
 
 
 class TestCase(object):
@@ -46,7 +46,7 @@ class TestCase(object):
         """
         try:
             data = TestCaseSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -65,7 +65,7 @@ class TestCase(object):
         """
         try:
             data = TestCaseUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -74,23 +74,3 @@ class TestCase(object):
                 raise error
             else:
                 return result
-
-
-class TestCaseSchema(Schema):
-    title = fields.Str(required=True)
-    template_id = fields.Int()
-    type_id = fields.Int()
-    priority_id = fields.Int()
-    estimate = fields.Str()
-    milestone_id = fields.Int()
-    refs = fields.Str()
-
-
-class TestCaseUpdateSchema(Schema):
-    title = fields.Str()
-    template_id = fields.Int()
-    type_id = fields.Int()
-    priority_id = fields.Int()
-    estimate = fields.Str()
-    milestone_id = fields.Int()
-    refs = fields.Str()

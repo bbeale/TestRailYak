@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import SectionSchema, SectionUpdateSchema, SchemaError
 
 
 class Section:
@@ -33,7 +33,7 @@ class Section:
 
         if suite_id is not None:
             if type(suite_id) not in [int, float] or suite_id <= 0:
-                raise ValidationError("[*] Invalid suite_id.")
+                raise SchemaError("[*] Invalid suite_id.")
 
             try:
                 result = self.client.send_get(f"get_sections/{project_id}&suite_id={suite_id}")
@@ -61,7 +61,7 @@ class Section:
         """
         try:
             data = SectionSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -85,10 +85,10 @@ class Section:
         :return: response from TestRail API containing the newly created test section
         """
         if "parent_id" not in data.keys():
-            raise ValidationError("[*] parent_id must be provided")
+            raise SchemaError("[*] parent_id must be provided")
         try:
             data = SectionSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -102,7 +102,7 @@ class Section:
         """Updates an existing section (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = SectionUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -120,14 +120,3 @@ class Section:
             raise error
         else:
             return result
-
-
-class SectionSchema(Schema):
-    description = fields.Str()
-    suite_id = fields.Int()
-    parent_id = fields.Int()
-    name = fields.Str(required=True)
-
-class SectionUpdateSchema(Schema):
-    description = fields.Str()
-    name = fields.Str()

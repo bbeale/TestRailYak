@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import CaseFieldSchema, SchemaError
 
 
 class CaseField(object):
@@ -25,7 +25,7 @@ class CaseField(object):
 
         try:
             data = CaseFieldSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -34,13 +34,3 @@ class CaseField(object):
                 raise error
             else:
                 return result
-
-
-class CaseFieldSchema(Schema):
-    type = fields.Str(required=True)
-    name = fields.Str(required=True)
-    label = fields.Str(required=True)
-    description = fields.Str()
-    include_all = fields.Bool()
-    template_ids = fields.List(fields.Int())
-    configs = fields.Dict()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
+from lib.testrail import APIError
 
 
 class Configuration(object):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError
-from marshmallow import Schema, fields, ValidationError
+from lib.testrail import APIError
+from lib.schema import MilestoneSchema, MilestoneUpdateSchema, SchemaError
 
 
 class Milestone(object):
@@ -33,7 +33,7 @@ class Milestone(object):
         """Creates a new milestone. """
         try:
             data = MilestoneSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -47,7 +47,7 @@ class Milestone(object):
         """Updates an existing milestone (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = MilestoneUpdateSchema().load(data, partial=True)
-        except ValidationError as err:
+        except SchemaError as err:
             raise err
         else:
             try:
@@ -65,21 +65,3 @@ class Milestone(object):
             raise error
         else:
             return result
-
-
-class MilestoneSchema(Schema):
-    name = fields.Str(required=True)
-    description = fields.Str()
-    due_on = fields.Time()
-    parent_id = fields.Int()
-    start_on = fields.Time()
-
-
-class MilestoneUpdateSchema(Schema):
-    name = fields.Str()
-    description = fields.Str()
-    due_on = fields.Time()
-    parent_id = fields.Int()
-    start_on = fields.Time()
-    is_completed = fields.Bool()
-    is_started = fields.Bool()
