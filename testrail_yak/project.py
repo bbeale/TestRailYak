@@ -1,40 +1,41 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from .testrail import APIError, APIValidationError
+from .testrail import APIError
+from marshmallow import Schema, fields, ValidationError
 
 
-class Project:
+class Project(object):
 
     __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api
-        self._fields = [
-            "announcement",
-            "show_announcement",
-            "suite_mode"
-        ]
 
-    def _suite_mode(self, project_id):
+    def _suite_mode(self, project_id: int):
         """Figure out the suite_mode value of a given project.
 
         :param project_id: project ID of the TestRail project
         :return: response from TestRail API containing the project
         """
-        if not project_id or project_id is None:
-            raise APIValidationError("[*] Invalid project_id")
-        if type(project_id) not in [int, float]:
-            raise APIValidationError("[*] project_id must be an int or float")
-        if project_id <= 0:
-            raise APIValidationError("[*] project_id must be > 0")
-
         try:
             p = self.get_project(project_id)
         except APIError as error:
             raise error
         else:
-            sadf = p["suite_mode"]
-            return sadf
+            return p["suite_mode"]
+
+    def get_project(self, project_id: int):
+        """Get a single project from the TestRail API by passing in its project_id.
+
+        :param project_id: project ID of the TestRail project
+        :return: response from TestRail API containing the project
+        """
+        try:
+            result = self.client.send_get(f"get_project/{project_id}")
+        except APIError as error:
+            raise error
+        else:
+            return result
 
     def get_projects(self):
         """Get all projects from the TestRail API."""
@@ -45,84 +46,57 @@ class Project:
         else:
             return result
 
-    def get_project(self, project_id):
-        """Get a single project from the TestRail API by passing in its project_id.
-
-        :param project_id: project ID of the TestRail project
-        :return: response from TestRail API containing the project
-        """
-        if not project_id or project_id is None:
-            raise APIValidationError("[*] Invalid project_id")
-
-        if type(project_id) not in [int, float]:
-            raise APIValidationError("[*] project_id must be an int or float")
-
-        if project_id <= 0:
-            raise APIValidationError("[*] project_id must be > 0")
-
-        try:
-            result = self.client.send_get("get_project/{}".format(project_id))
-        except APIError as error:
-            raise error
-        else:
-            return result
-
-    def add_project(self, name, data):
+    def add_project(self, data: dict):
         """Add a new project to TestRail.
 
-        :param name: name of the new TestRail project
         :param data: request data dictionary
         :return: response from TestRail API containing the newly created project
         """
-        if not name or name is None:
-            raise APIValidationError("[*] Invalid project name. Unable to create new project.")
-
-        proj_data = self._validate_data(data)
-        proj_data["name"] = name
-
         try:
-            result = self.client.send_post("add_project", proj_data)
+            data = ProjectSchema().load(data, partial=True)
+        except ValidationError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post("add_project", data=data)
+            except APIError as error:
+                raise error
+            else:
+                return result
+
+    def update_project(self, project_id: int, data: dict):
+        """Updates an existing project (admin status required; partial updates are supported, i.e. you can submit and update specific fields only). """
+        try:
+            data = ProjectUpdateSchema().load(data, partial=True)
+        except ValidationError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post(f"update_project/{project_id}", data=data)
+            except APIError as error:
+                raise error
+            else:
+                return result
+
+    def delete_project(self, project_id: int):
+        """Deletes an existing project (admin status required). """
+        try:
+            result = self.client.send_post(f"delete_project/{project_id}")
         except APIError as error:
             raise error
         else:
             return result
 
-    def update_project(self, project_id, data, name=None, is_completed=False):
 
-        if not project_id or project_id is None:
-            raise APIValidationError("[*] Invalid project_id")
+class ProjectSchema(Schema):
+    name                = fields.Str(required=True)
+    announcement        = fields.Str()
+    show_announcement   = fields.Bool()
+    suite_mode          = fields.Int()
 
-        proj_data = self._validate_data(data)
 
-        raise NotImplementedError
-
-    def delete_project(self, project_id):
-
-        if not project_id or project_id is None:
-            raise APIValidationError("[*] Invalid project_id")
-
-        raise NotImplementedError
-
-    def _validate_data(self, data_dict):
-        """Field validation static method that I may pull out and use everywhere if it works well.
-
-        :param data_dict:
-        :return:
-        """
-
-        def _valid_key(field):
-            return field in self._fields
-
-        def _valid_value(value):
-            return value is not None and value is not ""
-
-        _valid = dict()
-        for k, v in data_dict.items():
-
-            # print("[debug] Key:\t{} \tValid:\t{} ".format(k, _valid_key(k)),
-            #       " Value:\t{} \tValid:\t{} ".format(v, _valid_value(v)))
-
-            if _valid_key(k) and _valid_value(v):
-                _valid[k] = v
-
-        return _valid
+class ProjectUpdateSchema(Schema):
+    name                = fields.Str()
+    announcement        = fields.Str()
+    show_announcement   = fields.Bool()
+    is_completed        = fields.Bool()

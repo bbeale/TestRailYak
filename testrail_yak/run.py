@@ -1,0 +1,169 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from .testrail import APIError
+from marshmallow import Schema, fields, ValidationError
+
+
+class TestRun:
+
+    __module__ = "testrail_yak"
+
+    def __init__(self, api):
+        self.client = api
+
+    def get_test_run(self, run_id: int):
+        """Get a test run by run_id.
+
+        :param run_id: ID of the test run
+        :return: response from TestRail API containing the test cases
+        """
+        try:
+            result = self.client.send_get(f"get_run/{run_id}")
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+    def get_test_runs(self, project_id: int):
+        """Get a list of test runs associated with a given project_id.
+
+        :param project_id: project ID of the TestRail project
+        :return: response from TestRail API containing the test cases
+        """
+        try:
+            result = self.client.send_get(f"get_runs/{project_id}")
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+    def add_test_run(self, project_id: int, data: dict):
+        """Add a test run to a project.
+
+        Supported fields:
+
+            suite_id (int)
+                The ID of the test suite for the test run (optional if the project is operating in single suite mode, required otherwise)
+
+            name (string)
+                The name of the test run
+
+            description (string)
+                The description of the test run
+
+            milestone_id (int)
+                The ID of the milestone to link to the test run
+
+            assignedto_id
+                int
+                The ID of the user the test run should be assigned to
+
+            include_all	(bool)
+                True for including all test cases of the test suite and false for a custom case selection (default: true)
+
+            case_ids (array)
+                An array of case IDs for the custom case selection
+
+            refs (string)
+                A comma-separated list of references/requirements
+
+        :param project_id: ID of the TestRail project
+        :param data: request data dictionary
+        :return: response from TestRail API containing the newly created test run
+        """
+        try:
+            data = TestRunSchema().load(data, partial=True)
+        except ValidationError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post(f"add_run/{project_id}", data=data)
+            except APIError as error:
+                raise error
+            else:
+                return result
+
+    def update_test_run(self, run_id: int, data: dict):
+        """Update a test run in a project.
+
+        Supported fields:
+
+            name (string)
+                The name of the test run
+
+            description (string)
+                The description of the test run
+
+            milestone_id (int)
+                The ID of the milestone to link to the test run
+
+            include_all	(bool)
+                True for including all test cases of the test suite and false for a custom case selection (default: true)
+
+            case_ids (array)
+                An array of case IDs for the custom case selection
+
+            refs (string)
+                A comma-separated list of references/requirements
+
+        :param run_id:
+        :param data: request data dictionary
+        :return:
+        """
+        try:
+            data = TestRunUpdateSchema().load(data, partial=True)
+        except ValidationError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post(f"update_run/{run_id}", data=data)
+            except APIError as error:
+                raise error
+            else:
+                return result
+
+    def close_test_run(self, run_id: int):
+        """Close out a test run.
+
+        :param run_id:
+        :return:
+        """
+        try:
+            result = self.client.send_post(f"close_run/{run_id}")
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+    def delete_test_run(self, run_id: int):
+        """Delete a test run.
+
+        :param run_id:
+        :return:
+        """
+        try:
+            result = self.client.send_post(f"delete_run/{run_id}")
+        except APIError as error:
+            raise error
+        else:
+            return result
+
+
+class TestRunSchema(Schema):
+    suite_id        = fields.Int()
+    name            = fields.Str()
+    description     = fields.Str()
+    milestone_id    = fields.Int()
+    assignedto_id   = fields.Int()
+    include_all     = fields.Bool()
+    case_ids        = fields.List(fields.Int())
+    refs            = fields.Str()
+
+
+class TestRunUpdateSchema(Schema):
+    name            = fields.Str()
+    description     = fields.Str()
+    milestone_id    = fields.Int()
+    include_all     = fields.Bool()
+    case_ids        = fields.List(fields.Int())
+    refs            = fields.Str()
