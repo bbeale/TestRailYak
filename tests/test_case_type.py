@@ -1,6 +1,33 @@
-from unittest import TestCase
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from testrail_yak import CaseType
+from lib.testrail import APIClient
+from tests import reqmock
 
 
-class TestCaseType(TestCase):
-    def test_get_case_types(self):
-        self.fail()
+client = APIClient("http://example.testrail.com")
+ct = CaseType(client)
+
+
+def test_get_case_types(reqmock):
+    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case_types",
+        text='''[
+            {
+                "id": 1,
+                "is_default": false,
+                "name": "Automated"
+            },
+            {
+                "id": 2,
+                "is_default": false,
+                "name": "Functionality"
+            },
+        ]''')
+
+    res = ct.get_case_types()
+    assert res is not None
+    assert type(res) == list
+    assert type(res[0]) == dict
+    assert res[0]["id"] == 1
+    assert res[0]["is_default"] is False
+    assert res[0]["name"] == "Automated"

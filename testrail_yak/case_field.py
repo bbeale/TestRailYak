@@ -16,7 +16,8 @@ class CaseField(object):
         try:
             result = self.client.send_get(f"get_case_fields")
         except APIError as error:
-            raise error
+            print(error)
+            raise CaseFieldException
         else:
             return result
 
@@ -31,6 +32,11 @@ class CaseField(object):
             try:
                 result = self.client.send_post(f"add_case_field", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise CaseFieldException
             else:
                 return result
+
+
+class CaseFieldException(Exception):
+    pass

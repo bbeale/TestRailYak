@@ -1,9 +1,17 @@
-from unittest import TestCase
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from testrail_yak import Report
+from lib.testrail import APIClient
+from tests import reqmock
 
 
-class TestReport(TestCase):
-    def test_get_reports(self):
-        self.fail()
+client = APIClient("http://example.testrail.com")
+p = Project(client)
 
-    def test_run_report(self):
-        self.fail()
+
+def test_get_reports(reqmock):
+    reqmock.get()
+
+
+def test_run_report(reqmock):
+    reqmock.post()

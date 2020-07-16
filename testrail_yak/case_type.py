@@ -15,6 +15,11 @@ class CaseType(object):
         try:
             result = self.client.send_get(f"get_case_types")
         except APIError as error:
-            raise error
+            print(error)
+            raise CaseTypeException
         else:
             return result
+
+
+class CaseTypeException(Exception):
+    pass
