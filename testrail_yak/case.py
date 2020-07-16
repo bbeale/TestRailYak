@@ -20,7 +20,8 @@ class TestCase(object):
         try:
             result = self.client.send_get(f"get_cases/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise TestCaseException
         else:
             return result
 
@@ -33,7 +34,8 @@ class TestCase(object):
         try:
             result = self.client.send_get(f"get_case/{case_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise TestCaseException
         else:
             return result
 
@@ -46,13 +48,14 @@ class TestCase(object):
         """
         try:
             data = TestCaseSchema().load(data, partial=True)
-        except SchemaError as err:
-            raise err
+        except SchemaError:
+            raise TestCaseException
         else:
             try:
                 result = self.client.send_post(f"add_case/{section_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise TestCaseException
             else:
                 return result
 
@@ -65,12 +68,27 @@ class TestCase(object):
         """
         try:
             data = TestCaseUpdateSchema().load(data, partial=True)
-        except SchemaError as err:
-            raise err
+        except SchemaError:
+            raise TestCaseException
         else:
             try:
                 result = self.client.send_post(f"update_case/{case_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise TestCaseException
             else:
                 return result
+
+    def delete_test_case(self, case_id: int):
+        """Delete a test case. """
+        try:
+            result = self.client.send_post(f"delete_case/{case_id}", data={})
+        except APIError as error:
+            print(error)
+            raise TestCaseException
+        else:
+            return result
+
+
+class TestCaseException(Exception):
+    pass

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from lib.testrail import APIError
+import os
 
 
 class Attachment(object):
@@ -10,39 +11,55 @@ class Attachment(object):
     def __init__(self, api):
         self.client = api
 
-    def attach_to_plan(self, plan_id: int):
+    def attach_to_plan(self, plan_id: int, file_path: str):
         """Adds an attachment to a test plan. The maximum allowable upload size is set to 256mb. """
+        if not os.path.exists(file_path) or not os.path.isfile(file_path):
+            raise AttachmentException
+
         try:
-            result = self.client.send_post(f"add_attachment_to_plan/{plan_id}")
+            result = self.client.send_post(f"add_attachment_to_plan/{plan_id}", data=file_path)
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
-    def attach_to_plan_entry(self, plan_id: int, entry_id: int):
+    def attach_to_plan_entry(self, plan_id: int, entry_id: int, file_path: str):
         """Adds an attachment to a test plan entry. The maximum allowable upload size is set to 256mb. """
+        if not os.path.exists(file_path) or not os.path.isfile(file_path):
+            raise AttachmentException
+
         try:
-            result = self.client.send_post(f"add_attachment_to_plan_entry/{plan_id}/{entry_id}")
+            result = self.client.send_post(f"add_attachment_to_plan_entry/{plan_id}/{entry_id}", data=file_path)
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
-    def attach_to_result(self, result_id: int):
+    def attach_to_result(self, result_id: int, file_path: str):
         """Adds attachment to a result based on the result ID. The maximum allowable upload size is set to 256mb. """
+        if not os.path.exists(file_path) or not os.path.isfile(file_path):
+            raise AttachmentException
+
         try:
-            result = self.client.send_post(f"add_attachment_to_result/{result_id}")
+            result = self.client.send_post(f"add_attachment_to_result/{result_id}", data=file_path)
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
-    def attach_to_run(self, run_id: int):
+    def attach_to_run(self, run_id: int, file_path: str):
         """Adds attachment to test run. The maximum allowable upload size is set to 256mb. """
+        if not os.path.exists(file_path) or not os.path.isfile(file_path):
+            raise AttachmentException
+
         try:
-            result = self.client.send_post(f"add_attachment_to_run/{run_id}")
+            result = self.client.send_post(f"add_attachment_to_run/{run_id}", data=file_path)
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
@@ -51,7 +68,8 @@ class Attachment(object):
         try:
             result = self.client.send_get(f"get_attachments_for_case/{case_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
@@ -60,7 +78,8 @@ class Attachment(object):
         try:
             result = self.client.send_get(f"get_attachments_for_plan/{plan_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
@@ -69,7 +88,8 @@ class Attachment(object):
         try:
             result = self.client.send_get(f"get_attachments_for_plan_entry/{plan_id}/{entry_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
@@ -78,7 +98,8 @@ class Attachment(object):
         try:
             result = self.client.send_get(f"get_attachments_for_run/{run_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
@@ -87,24 +108,34 @@ class Attachment(object):
         try:
             result = self.client.send_get(f"get_attachments_for_test/{test_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
-    def get_attachment(self, attachment_id: int):
+    def get_attachment(self, attachment_id: int, filepath: str):
         """Retrieves the requested file identified by :attachment_id. """
+        if not os.path.exists(filepath) or not os.path.isfile(filepath):
+            raise AttachmentException
+
         try:
-            result = self.client.send_get(f"get_attachment/{attachment_id}")
+            result = self.client.send_get(f"get_attachment/{attachment_id}", filepath=filepath)
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
 
     def delete_attachment(self, attachment_id: int):
         """Deletes the specified attachment identified by :attachment_id. """
         try:
-            result = self.client.send_get(f"delete_attachment/{attachment_id}")
+            result = self.client.send_post(f"delete_attachment/{attachment_id}", data={})
         except APIError as error:
-            raise error
+            print(error)
+            raise AttachmentException
         else:
             return result
+
+
+class AttachmentException(Exception):
+    pass

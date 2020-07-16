@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 from lib.testrail import APIClient
 from .attachment import Attachment
+from .case import TestCase
 from .project import Project
 from .section import Section
 from .test import Test
-from .case import TestCase
 from .plan import TestPlan
 from .run import TestRun
 from .suite import TestSuite
@@ -25,10 +25,11 @@ class TestRailYak(APIClient):
         self.client             = APIClient(url)
         self.client.user        = uname
         self.client.password    = passwd
+        self.attachment         = Attachment(self.client)
+        self.test_case          = TestCase(self.client)
         self.project            = Project(self.client)
         self.section            = Section(self.client)
         self.test               = Test(self.client)
-        self.test_case          = TestCase(self.client)
         self.test_plan          = TestPlan(self.client)
         self.test_run           = TestRun(self.client)
         self.test_suite         = TestSuite(self.client)
