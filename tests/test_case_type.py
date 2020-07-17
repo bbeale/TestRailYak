@@ -11,8 +11,7 @@ ct = CaseType(client)
 
 def test_get_case_types(reqmock):
     reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case_types",
-        text='''[
-            {
+        text='''[{
                 "id": 1,
                 "is_default": false,
                 "name": "Automated"
@@ -21,8 +20,7 @@ def test_get_case_types(reqmock):
                 "id": 2,
                 "is_default": false,
                 "name": "Functionality"
-            },
-        ]''')
+            }]''')
 
     res = ct.get_case_types()
     assert res is not None

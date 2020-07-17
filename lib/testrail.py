@@ -96,8 +96,8 @@ class APIClient:
 				try:
 					return response.json()
 				except:  # Nothing to return
-					return {}
-
+					# ...but do we want an empty dict or should we assume response.text will be good enough?
+					return response.text
 
 class APIError(Exception):
 	pass

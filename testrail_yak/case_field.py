@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from lib.testrail import APIError
 from lib.schema import CaseFieldSchema, SchemaError
+import json
 
 
 class CaseField(object):
@@ -19,13 +20,16 @@ class CaseField(object):
             print(error)
             raise CaseFieldException
         else:
+            # not sure this is needed, added it to help debug
+            if type(result) == str:
+                result = json.loads(fr"{result}")
             return result
 
     def add_case_field(self, data: dict):
         """Creates a new test case custom field. """
 
         try:
-            data = CaseFieldSchema().load(data, partial=True)
+            data = CaseFieldSchema(partial=True).load(data)
         except SchemaError as err:
             raise err
         else:
@@ -35,6 +39,9 @@ class CaseField(object):
                 print(error)
                 raise CaseFieldException
             else:
+                # not sure this is needed, added it to help debug
+                if type(result) == str:
+                    result = json.loads(fr"{result}")
                 return result
 
 

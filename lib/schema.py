@@ -33,7 +33,7 @@ class CaseFieldSchema(Schema):
     description         = fields.Str()
     include_all         = fields.Bool()
     template_ids        = fields.List(fields.Int())
-    configs             = fields.Dict()
+    configs             = fields.List(fields.Dict(), required=True)
 
 
 class MilestoneSchema(Schema):
