@@ -58,7 +58,7 @@ class Configuration(object):
     def delete_config_group(self, config_group_id: int):
         """Deletes an existing configuration group and its configurations. """
         try:
-            result = self.client.send_post(f"delete_config_group/{config_group_id}")
+            result = self.client.send_post(f"delete_config_group/{config_group_id}", data=None)
         except APIError as error:
             raise error
         else:
@@ -67,7 +67,7 @@ class Configuration(object):
     def delete_config(self, config_id: int):
         """Deletes an existing configuration. """
         try:
-            result = self.client.send_post(f"delete_config/{config_id}")
+            result = self.client.send_post(f"delete_config/{config_id}", data=None)
         except APIError as error:
             raise error
         else:
