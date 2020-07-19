@@ -15,7 +15,8 @@ class Configuration(object):
         try:
             result = self.client.send_get(f"get_configs/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -24,7 +25,8 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"add_config_group/{project_id}", data={"name": name})
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -33,7 +35,8 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"add_config/{config_group_id}", data={"name": name})
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -42,7 +45,8 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"update_config_group/{config_group_id}", data={"name": name})
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -51,7 +55,8 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"update_config/{config_id}", data={"name": name})
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -60,7 +65,8 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"delete_config_group/{config_group_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
 
@@ -69,6 +75,11 @@ class Configuration(object):
         try:
             result = self.client.send_post(f"delete_config/{config_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise ConfigException
         else:
             return result
+
+
+class ConfigException(Exception):
+    pass
