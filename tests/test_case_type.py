@@ -11,6 +11,7 @@ ct = CaseType(client)
 
 def test_get_case_types(reqmock):
     reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case_types",
+        status_code=200,
         text='''[{
                 "id": 1,
                 "is_default": false,

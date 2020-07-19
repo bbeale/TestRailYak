@@ -11,6 +11,7 @@ cf = CaseField(client)
 
 def test_get_case_fields(reqmock):
     reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case_fields",
+        status_code=200,
         text='''[
             {
                 "configs": [
@@ -56,6 +57,7 @@ def test_get_case_fields(reqmock):
 def test_add_case_field(reqmock):
 
     reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_case_field",
+        status_code=200,
         text="""{
             "id": 33,
             "name": "My New Field",
