@@ -26,7 +26,8 @@ class TestPlan(object):
         try:
             result = self.client.send_get(f"get_plan/{plan_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise PlanException
         else:
             return result
 
@@ -39,7 +40,8 @@ class TestPlan(object):
         try:
             result = self.client.send_get(f"get_plans/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise PlanException
         else:
             return result
 
@@ -58,7 +60,8 @@ class TestPlan(object):
             try:
                 result = self.client.send_post(f"add_plan/{project_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise PlanException
             else:
                 return result
 
@@ -72,7 +75,8 @@ class TestPlan(object):
             try:
                 result = self.client.send_post(f"add_plan_entry/{plan_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise PlanException
             else:
                 return result
 
@@ -86,7 +90,8 @@ class TestPlan(object):
             try:
                 result = self.client.send_post(f"update_plan/{plan_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise PlanException
             else:
                 return result
 
@@ -100,32 +105,40 @@ class TestPlan(object):
             try:
                 result = self.client.send_post(f"update_plan_entry/{plan_id}/{entry_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise PlanException
             else:
                 return result
 
     def close_plan(self, plan_id: int):
         """Closes an existing test plan and archives its test runs & results. """
         try:
-            result = self.client.send_post(f"close_plan/{plan_id}")
+            result = self.client.send_post(f"close_plan/{plan_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise PlanException
         else:
             return result
 
     def delete_plan(self, plan_id: int):
         """Deletes an existing test plan. """
         try:
-            result = self.client.send_post(f"delete_plan/{plan_id}")
+            result = self.client.send_post(f"delete_plan/{plan_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise PlanException
         else:
             return result
 
     def delete_plan_entry(self, plan_id: int, entry_id: int):
         try:
-            result = self.client.send_post(f"update_plan_entry/{plan_id}/{entry_id}")
+            result = self.client.send_post(f"update_plan_entry/{plan_id}/{entry_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise PlanException
         else:
             return result
+
+
+class PlanException(Exception):
+    pass
