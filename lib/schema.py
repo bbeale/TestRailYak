@@ -39,17 +39,17 @@ class CaseFieldSchema(Schema):
 class MilestoneSchema(Schema):
     name                = fields.Str(required=True)
     description         = fields.Str()
-    due_on              = fields.Time()
+    due_on              = fields.Int()
     parent_id           = fields.Int()
-    start_on            = fields.Time()
+    start_on            = fields.Int()
 
 
 class MilestoneUpdateSchema(Schema):
     name                = fields.Str()
     description         = fields.Str()
-    due_on              = fields.Time()
+    due_on              = fields.Int()
     parent_id           = fields.Int()
-    start_on            = fields.Time()
+    start_on            = fields.Int()
     is_completed        = fields.Bool()
     is_started          = fields.Bool()
 
@@ -76,7 +76,7 @@ class TestPlanEntrySchema(Schema):
     case_ids            = fields.List(fields.Int())
     config_ids          = fields.List(fields.Int())
     refs                = fields.Str()
-    runs                = fields.List(fields.Int())
+    runs                = fields.List(fields.Dict())
 
 
 class TestPlanEntryUpdateSchema(Schema):
