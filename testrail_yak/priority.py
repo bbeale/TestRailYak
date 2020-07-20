@@ -14,6 +14,11 @@ class Priority(object):
         try:
             result = self.client.send_get("get_priorities")
         except APIError as error:
-            raise error
+            print(error)
+            raise PriorityException
         else:
             return result
+
+
+class PriorityException(Exception):
+    pass

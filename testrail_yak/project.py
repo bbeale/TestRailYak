@@ -11,18 +11,18 @@ class Project(object):
     def __init__(self, api):
         self.client = api
 
-    def _suite_mode(self, project_id: int):
-        """Figure out the suite_mode value of a given project.
-
-        :param project_id: project ID of the TestRail project
-        :return: response from TestRail API containing the project
-        """
-        try:
-            p = self.get_project(project_id)
-        except APIError as error:
-            raise error
-        else:
-            return p["suite_mode"]
+    # def _suite_mode(self, project_id: int):
+    #     """Figure out the suite_mode value of a given project.
+    #
+    #     :param project_id: project ID of the TestRail project
+    #     :return: response from TestRail API containing the project
+    #     """
+    #     try:
+    #         p = self.get_project(project_id)
+    #     except APIError as error:
+    #         raise error
+    #     else:
+    #         return p["suite_mode"]
 
     def get_project(self, project_id: int):
         """Get a single project from the TestRail API by passing in its project_id.
@@ -33,7 +33,8 @@ class Project(object):
         try:
             result = self.client.send_get(f"get_project/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ProjectException
         else:
             return result
 
@@ -42,7 +43,8 @@ class Project(object):
         try:
             result = self.client.send_get("get_projects")
         except APIError as error:
-            raise error
+            print(error)
+            raise ProjectException
         else:
             return result
 
@@ -60,7 +62,8 @@ class Project(object):
             try:
                 result = self.client.send_post("add_project", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise ProjectException
             else:
                 return result
 
@@ -74,15 +77,21 @@ class Project(object):
             try:
                 result = self.client.send_post(f"update_project/{project_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise ProjectException
             else:
                 return result
 
     def delete_project(self, project_id: int):
         """Deletes an existing project (admin status required). """
         try:
-            result = self.client.send_post(f"delete_project/{project_id}")
+            result = self.client.send_post(f"delete_project/{project_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise ProjectException
         else:
             return result
+
+
+class ProjectException(Exception):
+    pass
