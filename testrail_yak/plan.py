@@ -132,7 +132,7 @@ class TestPlan(object):
 
     def delete_plan_entry(self, plan_id: int, entry_id: int):
         try:
-            result = self.client.send_post(f"update_plan_entry/{plan_id}/{entry_id}", data=None)
+            result = self.client.send_post(f"delete_plan_entry/{plan_id}/{entry_id}", data=None)
         except APIError as error:
             print(error)
             raise PlanException
