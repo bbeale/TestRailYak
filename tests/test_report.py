@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 r = Report(client)
 
 
 def test_get_reports(reqmock):
     project_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_reports/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_reports/{project_id}",
         status_code=200,
         text='''[{
             "id": 1,
@@ -62,7 +64,7 @@ def test_get_reports(reqmock):
 
 def test_run_report(reqmock):
     report_template_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/run_report/{report_template_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/run_report/{report_template_id}",
         status_code=200,
         text='''{
             "report_url": "https://docs.testrail.com/index.php?/reports/view/383",

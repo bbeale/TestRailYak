@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 conf = Configuration(client)
 
 
 def test_get_configs(reqmock):
     project_id = 100
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_configs/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_configs/{project_id}",
         status_code=200,
         text='''[
             {
@@ -75,7 +77,7 @@ def test_get_configs(reqmock):
 def test_add_config_group(reqmock):
     project_id = 100
     name = "Browsers"
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_config_group/{project_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_config_group/{project_id}",
         status_code=200,
         text='''{
             "name": "Browsers"
@@ -89,7 +91,7 @@ def test_add_config_group(reqmock):
 def test_add_config(reqmock):
     config_group_id = 100
     name = "Chrome"
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_config/{config_group_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_config/{config_group_id}",
         status_code=200,
         text='''{
             "name": "Chrome"
@@ -103,7 +105,7 @@ def test_add_config(reqmock):
 def test_update_config_group(reqmock):
     config_group_id = 100
     name = "Browsers"
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_config_group/{config_group_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_config_group/{config_group_id}",
         status_code=200,
         text='''{
             "name": "Browsers"
@@ -117,7 +119,7 @@ def test_update_config_group(reqmock):
 def test_update_config(reqmock):
     config_id = 100
     name = "Chrome"
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_config/{config_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_config/{config_id}",
         status_code=200,
         text='''{
             "name": "Chrome"
@@ -130,13 +132,13 @@ def test_update_config(reqmock):
 
 def test_delete_config_group(reqmock):
     config_group_id = 100
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_config_group/{config_group_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_config_group/{config_group_id}",
         text='', status_code=200)
     conf.delete_config_group(config_group_id=config_group_id)
 
 
 def test_delete_config(reqmock):
     config_id = 100
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_config/{config_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_config/{config_id}",
         text='', status_code=200)
     conf.delete_config(config_id=config_id)

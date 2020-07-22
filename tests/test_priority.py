@@ -5,12 +5,14 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 p = Priority(client)
 
 
 def test_get_priorities(reqmock):
-    reqmock.get("http://example.testrail.com/index.php?/api/v2/get_priorities",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_priorities",
         status_code=200,
         text='''[{
                 "id": 1,

@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 p = Project(client)
 
 
 def test_get_project(reqmock):
     project_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_project/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_project/{project_id}",
         status_code=200,
         text='''{
             "announcement": "..",
@@ -36,7 +38,7 @@ def test_get_project(reqmock):
 
 
 def test_get_projects(reqmock):
-    reqmock.get("http://example.testrail.com/index.php?/api/v2/get_projects",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_projects",
         status_code=200,
         text='''[{
             "announcement": "..",
@@ -54,7 +56,7 @@ def test_get_projects(reqmock):
 
 
 def test_add_project(reqmock):
-    reqmock.post("http://example.testrail.com/index.php?/api/v2/add_project",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_project",
         status_code=200,
         text='''{
             "announcement": "This is the description for the project",
@@ -81,7 +83,7 @@ def test_add_project(reqmock):
 
 def test_update_project(reqmock):
     project_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_project/{project_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_project/{project_id}",
         status_code=200,
         text='''{
             "announcement": "..",
@@ -104,5 +106,5 @@ def test_update_project(reqmock):
 
 def test_delete_project(reqmock):
     project_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_project/{project_id}", status_code=200, text="")
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_project/{project_id}", status_code=200, text="")
     p.delete_project(project_id=project_id)

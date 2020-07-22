@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 tp = TestPlan(client)
 
 
 def test_get_test_plan(reqmock):
     plan_id = 80
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_plan/{plan_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_plan/{plan_id}",
         status_code=200,
         text='''{
             "assignedto_id": null,
@@ -103,7 +105,7 @@ def test_get_test_plan(reqmock):
 
 def test_get_test_plans(reqmock):
     project_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_plans/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_plans/{project_id}",
         status_code=200,
         text='''[{
             "assignedto_id": null,
@@ -179,7 +181,7 @@ def test_get_test_plans(reqmock):
 
 def test_add_test_plan(reqmock):
     project_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_plan/{project_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_plan/{project_id}",
         status_code=200,
         text='''{
             "assignedto_id": null,
@@ -268,7 +270,7 @@ def test_add_test_plan(reqmock):
 
 def test_add_plan_entry(reqmock):
     plan_id = 80
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_plan_entry/{plan_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_plan_entry/{plan_id}",
         status_code=200,
         text='''{
             "assignedto_id": null,
@@ -362,7 +364,7 @@ def test_add_plan_entry(reqmock):
 
 def test_update_plan(reqmock):
     plan_id = 80
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_plan/{plan_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_plan/{plan_id}",
         status_code=200,
         text='''{
             "assignedto_id": null,
@@ -442,7 +444,7 @@ def test_update_plan(reqmock):
 def test_update_plan_entry(reqmock):
     plan_id = 80
     entry_id = 81
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_plan_entry/{plan_id}/{entry_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_plan_entry/{plan_id}/{entry_id}",
         status_code=200,
         text='''{
                 "id": "3933d74b-4282-4c1f-be62-a641ab427063",
@@ -498,18 +500,18 @@ def test_update_plan_entry(reqmock):
 
 def test_close_plan(reqmock):
     plan_id = 80
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/close_plan/{plan_id}", status_code=200, text="")
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/close_plan/{plan_id}", status_code=200, text="")
     tp.close_plan(plan_id=plan_id)
 
 
 def test_delete_plan(reqmock):
     plan_id = 80
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_plan/{plan_id}", status_code=200, text="")
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_plan/{plan_id}", status_code=200, text="")
     tp.delete_plan(plan_id=plan_id)
 
 
 def test_delete_plan_entry(reqmock):
     plan_id = 80
     entry_id = 81
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_plan_entry/{plan_id}/{entry_id}", status_code=200, text="")
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_plan_entry/{plan_id}/{entry_id}", status_code=200, text="")
     tp.delete_plan_entry(plan_id=plan_id, entry_id=entry_id)

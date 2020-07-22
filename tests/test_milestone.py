@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 m = Milestone(client)
 
 
 def test_get_milestone(reqmock):
     milestone_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_milestone/{milestone_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_milestone/{milestone_id}",
         status_code=200,
         text='''{
             "completed_on": 1389968184,
@@ -39,7 +41,7 @@ def test_get_milestone(reqmock):
 
 def test_get_milestones(reqmock):
     project_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_milestones/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_milestones/{project_id}",
         status_code=200,
         text='''[{
             "completed_on": 1389968184,
@@ -59,7 +61,7 @@ def test_get_milestones(reqmock):
 
 def test_add_milestone(reqmock):
     project_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_milestone/{project_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_milestone/{project_id}",
         status_code=200,
         text='''{
             "completed_on": 1389968184,
@@ -79,7 +81,7 @@ def test_add_milestone(reqmock):
 
 def test_update_milestone(reqmock):
     milestone_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_milestone/{milestone_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_milestone/{milestone_id}",
         status_code=200,
         text='''{
                 "completed_on": 1389968184,
@@ -99,7 +101,7 @@ def test_update_milestone(reqmock):
 
 def test_delete_milestone(reqmock):
     milestone_id = 1
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_milestone/{milestone_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_milestone/{milestone_id}",
         status_code=200,
         text='')
     res = m.delete_milestone(milestone_id=milestone_id)

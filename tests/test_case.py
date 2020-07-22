@@ -5,13 +5,15 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 tc = TestCase(client)
 
 
 def test_get_test_cases(reqmock):
     project_id = 10
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_cases/{project_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_cases/{project_id}",
         status_code=200,
         text='''[{
             "created_by": 5,
@@ -68,7 +70,7 @@ def test_get_test_cases(reqmock):
 
 def test_get_test_case(reqmock):
     case_id = 1
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case/{case_id}",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_case/{case_id}",
         status_code=200,
         text='''{
             "created_by": 5,
@@ -108,7 +110,7 @@ def test_get_test_case(reqmock):
 def test_add_test_case(reqmock):
     section_id = 100
     data = {}
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/add_case/{section_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_case/{section_id}",
         status_code=200,
         text='''{
             "created_by": 5,
@@ -148,7 +150,7 @@ def test_add_test_case(reqmock):
 def test_update_test_case(reqmock):
     case_id = 100
     data = {}
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/update_case/{case_id}",
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/update_case/{case_id}",
         status_code=200,
         text='''{
             "created_by": 5,
@@ -187,5 +189,5 @@ def test_update_test_case(reqmock):
 
 def test_delete_test_case(reqmock):
     case_id = 100
-    reqmock.post(f"http://example.testrail.com/index.php?/api/v2/delete_case/{case_id}", status_code=200, text='')
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_case/{case_id}", status_code=200, text='')
     tc.delete_test_case(case_id)

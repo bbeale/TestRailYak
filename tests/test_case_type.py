@@ -5,12 +5,14 @@ from lib.testrail import APIClient
 from tests import reqmock
 
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 ct = CaseType(client)
 
 
 def test_get_case_types(reqmock):
-    reqmock.get(f"http://example.testrail.com/index.php?/api/v2/get_case_types",
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_case_types",
         status_code=200,
         text='''[{
                 "id": 1,
