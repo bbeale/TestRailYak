@@ -4,34 +4,239 @@ from testrail_yak import TestResult
 from lib.testrail import APIClient
 from tests import reqmock
 
+import pytest
 
-client = APIClient("http://example.testrail.com")
+BASEURL = "http://example.testrail.com"
+
+client = APIClient(BASEURL)
 tr = TestResult(client)
 
 
 def test_get_test_results(reqmock):
-    reqmock.get()
+    test_id = 1
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results/{test_id}",
+        status_code=200,
+        text='''[{
+            "assignedto_id": 1,
+            "comment": "This test failed: ..",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "5m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }]''')
+
+    res = tr.get_test_results(test_id=test_id)
+    assert res is not None
+    assert type(res) == list
+    assert type(res[0]) == dict
+    assert "assignedto_id" in res[0].keys()
+    assert "comment" in res[0].keys()
+    assert "created_by" in res[0].keys()
+    assert "created_on" in res[0].keys()
+    assert "custom_step_results" in res[0].keys()
+    assert "defects" in res[0].keys()
+    assert "elapsed" in res[0].keys()
+    assert "id" in res[0].keys()
+    assert "status_id" in res[0].keys()
+    assert "test_id" in res[0].keys()
+    assert "version" in res[0].keys()
 
 
 def test_get_testcase_results(reqmock):
-    reqmock.get()
+    run_id = 1
+    case_id = 1
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results_for_case/{run_id}/{case_id}",
+        status_code=200,
+        text='''[{
+            "assignedto_id": 1,
+            "comment": "This test failed: ..",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "5m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }]''')
+
+    res = tr.get_testcase_results(run_id=run_id, case_id=case_id)
+    assert res is not None
+    assert type(res) == list
+    assert type(res[0]) == dict
 
 
 def test_get_testrun_results(reqmock):
-    reqmock.get()
+    run_id = 1
+    reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results_for_run/{run_id}",
+        status_code=200,
+        text='''[{
+            "assignedto_id": 1,
+            "comment": "This test failed: ..",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "5m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }]''')
+
+    res = tr.get_testrun_results(run_id=run_id)
+    assert res is not None
+    assert type(res) == list
+    assert type(res[0]) == dict
 
 
 def test_add_result(reqmock):
-    reqmock.post()
+    test_id = 1
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_result/{test_id}",
+        status_code=200,
+        text='''{
+            "assignedto_id": 6,
+            "comment": "Test comment",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "1m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }''')
+
+    data = {
+        "status_id": 5,
+        "comment": "Test comment",
+        "version": "1.0RC1",
+        "elapsed": "1m",
+        "defects": "TR-1",
+        "assignedto_id": 6
+    }
+
+    res = tr.add_result(test_id=test_id,data=data)
+    assert res is not None
+    assert type(res) == dict
+    assert res["status_id"] == 5
+    assert res["comment"] == "Test comment"
+    assert res["version"] == "1.0RC1"
+    assert res["elapsed"] == "1m"
+    assert res["defects"] == "TR-1"
+    assert res["assignedto_id"] == 6
 
 
 def test_add_testcase_result(reqmock):
-    reqmock.post()
+    run_id = 1
+    case_id = 1
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_result_for_case/{run_id}/{case_id}",
+        status_code=200,
+        text='''{
+            "assignedto_id": 6,
+            "comment": "Test comment",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "1m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }''')
+
+    data = {
+        "status_id": 5,
+        "comment": "Test comment",
+        "version": "1.0RC1",
+        "elapsed": "1m",
+        "defects": "TR-1",
+        "assignedto_id": 6
+    }
+
+    res = tr.add_testcase_result(run_id=run_id, case_id=case_id, data=data)
+    assert res is not None
+    assert type(res) == dict
+    assert res["status_id"] == 5
+    assert res["comment"] == "Test comment"
+    assert res["version"] == "1.0RC1"
+    assert res["elapsed"] == "1m"
+    assert res["defects"] == "TR-1"
+    assert res["assignedto_id"] == 6
 
 
+@pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_results(reqmock):
-    reqmock.post()
+
+    run_id = 1
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_results/{run_id}",
+        status_code=200,
+        text='''[{
+            "assignedto_id": 1,
+            "comment": "This test failed: ..",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "5m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }]''')
+
+    data = {
+        "results": [
+            {
+                "test_id": 101,
+                "status_id": 5,
+                "comment": "This test failed",
+                "defects": "TR-7"
+
+            },
+            {
+                "test_id": 102,
+                "status_id": 1,
+                "comment": "This test passed",
+                "elapsed": "5m",
+                "version": "1.0 RC1"
+            },
+            {
+                "test_id": 101,
+                "assignedto_id": 5,
+                "comment": "Assigned this test to Joe"
+            }
+        ]
+    }
+
+    res = tr.add_results(run_id=run_id, data=data)
+    assert res is not None
 
 
+@pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_testcase_results(reqmock):
     reqmock.post()
+    reqmock.get(f"{BASEURL}/")
+
+    res = tr.get_test_results(test_id=test_id)
+    assert res is not None
