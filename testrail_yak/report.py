@@ -14,7 +14,8 @@ class Report(object):
         try:
             result = self.client.send_get(f"get_reports/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ReportException
         else:
             return result
 
@@ -22,6 +23,11 @@ class Report(object):
         try:
             result = self.client.send_get(f"run_report/{report_template_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ReportException
         else:
             return result
+
+
+class ReportException(Exception):
+    pass
