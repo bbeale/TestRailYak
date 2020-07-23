@@ -82,7 +82,7 @@ class TestSuite:
         :return: response from TestRail API containing the newly created test suite
         """
         try:
-            result = self.client.send_post(f"delete_suite/{suite_id}")
+            result = self.client.send_post(f"delete_suite/{suite_id}", data=None)
         except APIError as error:
             raise error
         else:
