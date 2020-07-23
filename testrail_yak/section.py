@@ -5,6 +5,7 @@ from lib.schema import SectionSchema, SectionUpdateSchema, SchemaError
 
 
 class Section:
+
     __module__ = "testrail_yak"
 
     def __init__(self, api):
@@ -23,32 +24,34 @@ class Section:
         else:
             return result
 
-    def get_sections(self, project_id: int, suite_id=None):
+    def get_sections(self, project_id: int):
+        """Get a list of test sections associated with a project_id and an optional suite_id
+
+        :param project_id:
+        :return: response from TestRail API containing the collection of sections
+        """
+        try:
+            result = self.client.send_get(f"get_sections/{project_id}")
+        except APIError as error:
+            raise error
+
+        return result
+
+    def get_sections_by_suite_id(self, project_id: int, suite_id: int):
         """Get a list of test sections associated with a project_id and an optional suite_id
 
         :param project_id:
         :param suite_id:
         :return: response from TestRail API containing the collection of sections
         """
-
-        if suite_id is not None:
-            if type(suite_id) not in [int, float] or suite_id <= 0:
-                raise SchemaError("[*] Invalid suite_id.")
-
-            try:
-                result = self.client.send_get(f"get_sections/{project_id}&suite_id={suite_id}")
-            except APIError as error:
-                raise error
-
-        else:
-            try:
-                result = self.client.send_get(f"get_sections/{project_id}")
-            except APIError as error:
-                raise error
+        try:
+            result = self.client.send_get(f"get_sections/{project_id}&suite_id={suite_id}")
+        except APIError as error:
+            raise error
 
         return result
 
-    def add_sprint_section(self, project_id: int, data: dict):
+    def add_section(self, project_id: int, data: dict):
         """Add a new section representing a "sprint" to a TestRail project.
 
         For readability, this separate method is just for adding parent sections (Jira sprints) vs child sections (Jira stories).
@@ -71,8 +74,8 @@ class Section:
             else:
                 return result
 
-    def add_story_section(self, project_id: int, data: dict):
-        """Add a new section representing a "story" to a TestRail project.
+    def add_child_section(self, project_id: int, parent_id: int, data: dict):
+        """Add a new child section representing a "story" to a TestRail project. The differentiating factor is the parent ID value.
 
         This section will be assigned to a parent/child relationship with a parent section, thus parent_id is required.
 
@@ -81,11 +84,11 @@ class Section:
         Because of this parent id requirement, no suite_id will be needed. If it is ever used in the future, add_sprint_section is the more appropriate place for it.
 
         :param project_id: project ID of the TestRail project
+        :param parent_id: ID of the parent section
         :param data: request data dictionary
         :return: response from TestRail API containing the newly created test section
         """
-        if "parent_id" not in data.keys():
-            raise SchemaError("[*] parent_id must be provided")
+        data["parent_id"] = parent_id
         try:
             data = SectionSchema().load(data, partial=True)
         except SchemaError as err:
@@ -115,7 +118,7 @@ class Section:
     def delete_section(self, section_id: int):
         """Deletes an existing section. """
         try:
-            result = self.client.send_post(f"delete_section/{section_id}")
+            result = self.client.send_post(f"delete_section/{section_id}", data=None)
         except APIError as error:
             raise error
         else:
