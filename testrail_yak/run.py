@@ -129,7 +129,7 @@ class TestRun:
         :return:
         """
         try:
-            result = self.client.send_post(f"close_run/{run_id}")
+            result = self.client.send_post(f"close_run/{run_id}", data=None)
         except APIError as error:
             raise error
         else:
@@ -142,7 +142,7 @@ class TestRun:
         :return:
         """
         try:
-            result = self.client.send_post(f"delete_run/{run_id}")
+            result = self.client.send_post(f"delete_run/{run_id}", data=None)
         except APIError as error:
             raise error
         else:
