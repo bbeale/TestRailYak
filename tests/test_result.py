@@ -183,7 +183,7 @@ def test_add_testcase_result(reqmock):
     assert res["assignedto_id"] == 6
 
 
-@pytest.mark.skip("TestRailYak method not yet implemented")
+# @pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_results(reqmock):
 
     run_id = 1
@@ -233,10 +233,49 @@ def test_add_results(reqmock):
     assert res is not None
 
 
-@pytest.mark.skip("TestRailYak method not yet implemented")
+# @pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_testcase_results(reqmock):
-    reqmock.post()
-    reqmock.get(f"{BASEURL}/")
+    run_id = 1
+    reqmock.post(f"{BASEURL}/index.php?/api/v2/add_results_for_cases/{run_id}",
+        status_code=200,
+        text='''[{
+            "assignedto_id": 1,
+            "comment": "This test failed: ..",
+            "created_by": 1,
+            "created_on": 1393851801,
+            "custom_step_results": [{
+                "..": "..."
+            }],
+            "defects": "TR-1",
+            "elapsed": "5m",
+            "id": 1,
+            "status_id": 5,
+            "test_id": 1,
+            "version": "1.0RC1"
+        }]''')
 
-    res = tr.get_test_results(test_id=test_id)
+    data = {
+        "results": [
+            {
+                "case_id": 1,
+                "status_id": 5,
+                "comment": "This test failed",
+                "defects": "TR-7"
+
+            },
+            {
+                "case_id": 2,
+                "status_id": 1,
+                "comment": "This test passed",
+                "elapsed": "5m",
+                "version": "1.0 RC1"
+            },
+            {
+                "case_id": 1,
+                "assignedto_id": 5,
+                "comment": "Assigned this test to Joe"
+            }
+        ]
+    }
+    res = tr.add_testcase_results(run_id=run_id, data=data)
     assert res is not None

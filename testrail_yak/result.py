@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from lib.testrail import APIError
-from lib.schema import ResultSchema, TestCaseResultSchema, SchemaError
+from lib.schema import ResultSchema, TestCaseResultSchema, ResultsSchema, SchemaError
 
 
 class TestResult:
@@ -20,7 +20,8 @@ class TestResult:
         try:
             result = self.client.send_get(f"get_results/{test_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ResultException
         else:
             return result
 
@@ -34,7 +35,8 @@ class TestResult:
         try:
             result = self.client.send_get(f"get_results_for_case/{run_id}/{case_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ResultException
         else:
             return result
 
@@ -47,7 +49,8 @@ class TestResult:
         try:
             result = self.client.send_get(f"get_results_for_run/{run_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise ResultException
         else:
             return result
 
@@ -64,7 +67,8 @@ class TestResult:
             try:
                 result = self.client.send_post(f"add_result/{test_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise ResultException
             else:
                 return result
 
@@ -81,12 +85,39 @@ class TestResult:
             try:
                 result = self.client.send_post(f"add_result_for_case/{run_id}/{case_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise ResultException
             else:
                 return result
 
-    def add_results(self, run_id: int):
-        raise NotImplemented
+    def add_results(self, run_id: int, data: dict):
+        try:
+            data = ResultsSchema().load(data, partial=True)
+        except SchemaError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post(f"add_results/{run_id}", data=data)
+            except APIError as error:
+                print(error)
+                raise ResultException
+            else:
+                return result
 
-    def add_testcase_results(self, run_id: int):
-        raise NotImplemented
+    def add_testcase_results(self, run_id: int, data: dict):
+        try:
+            data = ResultsSchema().load(data, partial=True)
+        except SchemaError as err:
+            raise err
+        else:
+            try:
+                result = self.client.send_post(f"add_results_for_cases/{run_id}", data=data)
+            except APIError as error:
+                print(error)
+                raise ResultException
+            else:
+                return result
+
+
+class ResultException(Exception):
+    pass

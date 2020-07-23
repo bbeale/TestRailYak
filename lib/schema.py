@@ -111,6 +111,10 @@ class ResultSchema(Schema):
     assignedto_id       = fields.Int()
 
 
+class ResultsSchema(Schema):
+    results             = fields.List(fields.Dict())
+
+
 class TestCaseResultSchema(Schema):
     status_id           = fields.Int(required=True)
     comment             = fields.Str()
