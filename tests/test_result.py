@@ -2,11 +2,8 @@
 # -*- coding: utf-8 -*-
 from testrail_yak import TestResult
 from lib.testrail import APIClient
-from tests import reqmock
+from tests import BASEURL, reqmock
 
-import pytest
-
-BASEURL = "http://example.testrail.com"
 
 client = APIClient(BASEURL)
 tr = TestResult(client)
@@ -183,7 +180,6 @@ def test_add_testcase_result(reqmock):
     assert res["assignedto_id"] == 6
 
 
-# @pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_results(reqmock):
 
     run_id = 1
@@ -233,7 +229,6 @@ def test_add_results(reqmock):
     assert res is not None
 
 
-# @pytest.mark.skip("TestRailYak method not yet implemented")
 def test_add_testcase_results(reqmock):
     run_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_results_for_cases/{run_id}",

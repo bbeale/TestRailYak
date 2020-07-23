@@ -4,6 +4,9 @@ import requests_mock
 import pytest
 
 
+BASEURL = "http://example.testrail.com"
+
+
 @pytest.fixture
 def reqmock():
     with requests_mock.Mocker() as m:

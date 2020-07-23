@@ -3,10 +3,8 @@
 from testrail_yak import Attachment
 from lib.testrail import APIClient
 import os
-from tests import reqmock
+from tests import BASEURL, reqmock
 
-
-BASEURL = "http://example.testrail.com"
 
 client = APIClient(BASEURL)
 a = Attachment(client)

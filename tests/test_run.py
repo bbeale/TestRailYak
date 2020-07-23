@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 from testrail_yak import TestRun
 from lib.testrail import APIClient
-from tests import reqmock
+from tests import BASEURL, reqmock
 
-
-BASEURL = "http://example.testrail.com"
 
 client = APIClient(BASEURL)
 r = TestRun(client)
@@ -265,10 +263,7 @@ def test_close_test_run(reqmock):
             "url": "http:///testrail/index.php?/runs/view/81"
         }''')
 
-    # res =
     r.close_test_run(run_id=run_id)
-    # assert res is not None
-    # assert type(res) == dict
 
 
 def test_delete_test_run(reqmock):

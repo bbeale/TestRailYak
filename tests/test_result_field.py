@@ -2,10 +2,8 @@
 # -*- coding: utf-8 -*-
 from testrail_yak import ResultField
 from lib.testrail import APIClient
-from tests import reqmock
+from tests import BASEURL, reqmock
 
-
-BASEURL = "http://example.testrail.com"
 
 client = APIClient(BASEURL)
 rf = ResultField(client)
