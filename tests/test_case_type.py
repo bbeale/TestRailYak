@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from testrail_yak import CaseType
-from lib.testrail import APIClient
+from testrail_yak.lib.testrail import APIClient
 from tests import BASEURL, reqmock
-
 
 client = APIClient(BASEURL)
 ct = CaseType(client)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIError
+from .lib.testrail import APIError
 
 
 class Priority(object):

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIClient
+from .lib.testrail import APIClient
 from .attachment import Attachment
 from .case import TestCase
 from .case_field import CaseField

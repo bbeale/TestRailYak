@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIError
-from lib.schema import MilestoneSchema, MilestoneUpdateSchema, SchemaError
+from .lib.testrail import APIError
+from .lib.schema import MilestoneSchema, MilestoneUpdateSchema, SchemaError
 
 
 class Milestone(object):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIError
-from lib.schema import (
+from testrail_yak.lib.testrail import APIError
+from .lib.schema import (
     TestPlanSchema, 
     TestPlanUpdateSchema, 
     TestPlanEntrySchema, 

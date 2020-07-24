@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from testrail_yak import User
-from lib.testrail import APIClient
-from tests import reqmock, BASEURL
+from testrail_yak.lib.testrail import APIClient
+from tests import BASEURL, reqmock
 
 
 client = APIClient(BASEURL)

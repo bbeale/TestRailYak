@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIError
-from lib.schema import SectionSchema, SectionUpdateSchema, SchemaError
+from .lib.testrail import APIError
+from .lib.schema import SectionSchema, SectionUpdateSchema, SchemaError
 
 
 class Section:

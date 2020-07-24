@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from lib.testrail import APIError
-from lib.schema import TestCaseSchema, TestCaseUpdateSchema, SchemaError
+from .lib.testrail import APIError
+from .lib.schema import TestCaseSchema, TestCaseUpdateSchema, SchemaError
 
 
 class TestCase(object):
