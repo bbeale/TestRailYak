@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
       name="testrail_yak",
-      version="1.0.8",
+      version="2.0",
       packages=["testrail_yak"],
       classifiers=[
             "Programming Language :: Python :: 3",
@@ -47,5 +47,5 @@ setuptools.setup(
       author_email="beale.ben@gmail.com",
       url="https://github.com/bbeale/TestRailYak",
       setup_requires=["wheel", "setuptools"],
-      requires=["urllib3", "requests"]
+      requires=["urllib3", "requests", "marshmallow"]
       )
