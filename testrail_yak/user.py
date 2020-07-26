@@ -19,7 +19,8 @@ class User:
         try:
             result = self.client.send_get(f"get_user/{user_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise UserException
         else:
             return result
 
@@ -32,7 +33,8 @@ class User:
         try:
             result = self.client.send_get(f"get_user_by_email&email={email_addr}")
         except APIError as error:
-            raise error
+            print(error)
+            raise UserException
         else:
             return result
 
@@ -44,6 +46,11 @@ class User:
         try:
             result = self.client.send_get("get_users")
         except APIError as error:
-            raise error
+            print(error)
+            raise UserException
         else:
             return result
+
+
+class UserException(Exception):
+    pass

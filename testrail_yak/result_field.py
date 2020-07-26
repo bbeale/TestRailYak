@@ -10,10 +10,15 @@ class ResultField(object):
     def __init__(self, api):
         self.client = api
 
-    def get_result_fields(self):
+    def get_result_fields(self) -> list:
         try:
             result = self.client.send_get("get_result_fields")
         except APIError as error:
-            raise error
+            print(error)
+            raise ResultFieldException
         else:
             return result
+
+
+class ResultFieldException(Exception):
+    pass

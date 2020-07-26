@@ -12,7 +12,7 @@ class CaseField(object):
     def __init__(self, api):
         self.client = api
 
-    def get_case_fields(self):
+    def get_case_fields(self) -> list:
         """Returns a list of available test case custom fields. """
         try:
             result = self.client.send_get(f"get_case_fields")
@@ -25,7 +25,7 @@ class CaseField(object):
                 result = json.loads(fr"{result}")
             return result
 
-    def add_case_field(self, data: dict):
+    def add_case_field(self, data: dict) -> dict:
         """Creates a new test case custom field. """
 
         try:

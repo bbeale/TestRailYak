@@ -4,14 +4,14 @@ from .lib.testrail import APIError
 from .lib.schema import ResultSchema, TestCaseResultSchema, ResultsSchema, SchemaError
 
 
-class TestResult:
+class Result(object):
 
     __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api
 
-    def get_test_results(self, test_id: int):
+    def get_test_results(self, test_id: int) -> list:
         """Get test results for a given test_id.
 
         :param test_id:
@@ -25,7 +25,7 @@ class TestResult:
         else:
             return result
 
-    def get_testcase_results(self, run_id: int, case_id: int):
+    def get_testcase_results(self, run_id: int, case_id: int) -> list:
         """Get test results for a given test case.
 
         :param run_id:
@@ -40,7 +40,7 @@ class TestResult:
         else:
             return result
 
-    def get_testrun_results(self, run_id: int):
+    def get_testrun_results(self, run_id: int) -> list:
         """Get test results for a given test run.
 
         :param run_id:
@@ -54,7 +54,7 @@ class TestResult:
         else:
             return result
 
-    def add_result(self, test_id: int, data: dict):
+    def add_result(self, test_id: int, data: dict) -> dict:
         """Adds a new test result, comment or assigns a test.
 
         It’s recommended to use add_results instead if you plan to add results for multiple tests.
@@ -72,7 +72,7 @@ class TestResult:
             else:
                 return result
 
-    def add_testcase_result(self, run_id: int, case_id: int, data: dict):
+    def add_testcase_result(self, run_id: int, case_id: int, data: dict) -> dict:
         """Adds a new test result, comment or assigns a test (for a test run and case combination).
 
         It’s recommended to use add_results_for_cases instead if you plan to add results for multiple test cases.
@@ -90,7 +90,7 @@ class TestResult:
             else:
                 return result
 
-    def add_results(self, run_id: int, data: dict):
+    def add_results(self, run_id: int, data: dict) -> list:
         try:
             data = ResultsSchema().load(data, partial=True)
         except SchemaError as err:
@@ -104,7 +104,7 @@ class TestResult:
             else:
                 return result
 
-    def add_testcase_results(self, run_id: int, data: dict):
+    def add_testcase_results(self, run_id: int, data: dict) -> list:
         try:
             data = ResultsSchema().load(data, partial=True)
         except SchemaError as err:

@@ -4,14 +4,14 @@ from .lib.testrail import APIError
 from .lib.schema import SectionSchema, SectionUpdateSchema, SchemaError
 
 
-class Section:
+class Section(object):
 
     __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api
 
-    def get_section(self, section_id: int):
+    def get_section(self, section_id: int) -> dict:
         """Get test section from a test suite by section_id.
 
         :param section_id: section ID to grab section from
@@ -20,11 +20,12 @@ class Section:
         try:
             result = self.client.send_get(f"get_section/{section_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise SectionException
         else:
             return result
 
-    def get_sections(self, project_id: int):
+    def get_sections(self, project_id: int) -> list:
         """Get a list of test sections associated with a project_id and an optional suite_id
 
         :param project_id:
@@ -33,11 +34,12 @@ class Section:
         try:
             result = self.client.send_get(f"get_sections/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise SectionException
+        else:
+            return result
 
-        return result
-
-    def get_sections_by_suite_id(self, project_id: int, suite_id: int):
+    def get_sections_by_suite_id(self, project_id: int, suite_id: int) -> list:
         """Get a list of test sections associated with a project_id and an optional suite_id
 
         :param project_id:
@@ -47,11 +49,12 @@ class Section:
         try:
             result = self.client.send_get(f"get_sections/{project_id}&suite_id={suite_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise SectionException
+        else:
+            return result
 
-        return result
-
-    def add_section(self, project_id: int, data: dict):
+    def add_section(self, project_id: int, data: dict) -> dict:
         """Add a new section representing a "sprint" to a TestRail project.
 
         For readability, this separate method is just for adding parent sections (Jira sprints) vs child sections (Jira stories).
@@ -70,11 +73,12 @@ class Section:
             try:
                 result = self.client.send_post(f"add_section/{project_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise SectionException
             else:
                 return result
 
-    def add_child_section(self, project_id: int, parent_id: int, data: dict):
+    def add_child_section(self, project_id: int, parent_id: int, data: dict) -> dict:
         """Add a new child section representing a "story" to a TestRail project. The differentiating factor is the parent ID value.
 
         This section will be assigned to a parent/child relationship with a parent section, thus parent_id is required.
@@ -97,11 +101,12 @@ class Section:
             try:
                 result = self.client.send_post(f"add_section/{project_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise SectionException
             else:
                 return result
 
-    def update_section(self, section_id: int, data: dict):
+    def update_section(self, section_id: int, data: dict) -> dict:
         """Updates an existing section (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = SectionUpdateSchema().load(data, partial=True)
@@ -111,15 +116,21 @@ class Section:
             try:
                 result = self.client.send_post(f"update_section/{section_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise SectionException
             else:
                 return result
 
-    def delete_section(self, section_id: int):
+    def delete_section(self, section_id: int) -> dict:
         """Deletes an existing section. """
         try:
             result = self.client.send_post(f"delete_section/{section_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise SectionException
         else:
             return result
+
+
+class SectionException(Exception):
+    pass

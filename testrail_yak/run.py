@@ -4,14 +4,14 @@ from .lib.testrail import APIError
 from .lib.schema import TestRunSchema, TestRunUpdateSchema, SchemaError
 
 
-class TestRun:
+class Run(object):
 
     __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api
 
-    def get_test_run(self, run_id: int):
+    def get_test_run(self, run_id: int) -> dict:
         """Get a test run by run_id.
 
         :param run_id: ID of the test run
@@ -20,11 +20,12 @@ class TestRun:
         try:
             result = self.client.send_get(f"get_run/{run_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise RunException
         else:
             return result
 
-    def get_test_runs(self, project_id: int):
+    def get_test_runs(self, project_id: int) -> list:
         """Get a list of test runs associated with a given project_id.
 
         :param project_id: project ID of the TestRail project
@@ -33,11 +34,12 @@ class TestRun:
         try:
             result = self.client.send_get(f"get_runs/{project_id}")
         except APIError as error:
-            raise error
+            print(error)
+            raise RunException
         else:
             return result
 
-    def add_test_run(self, project_id: int, data: dict):
+    def add_test_run(self, project_id: int, data: dict) -> dict:
         """Add a test run to a project.
 
         Supported fields:
@@ -79,11 +81,12 @@ class TestRun:
             try:
                 result = self.client.send_post(f"add_run/{project_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise RunException
             else:
                 return result
 
-    def update_test_run(self, run_id: int, data: dict):
+    def update_test_run(self, run_id: int, data: dict) -> dict:
         """Update a test run in a project.
 
         Supported fields:
@@ -118,11 +121,12 @@ class TestRun:
             try:
                 result = self.client.send_post(f"update_run/{run_id}", data=data)
             except APIError as error:
-                raise error
+                print(error)
+                raise RunException
             else:
                 return result
 
-    def close_test_run(self, run_id: int):
+    def close_test_run(self, run_id: int) -> dict:
         """Close out a test run.
 
         :param run_id:
@@ -131,11 +135,12 @@ class TestRun:
         try:
             result = self.client.send_post(f"close_run/{run_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise RunException
         else:
             return result
 
-    def delete_test_run(self, run_id: int):
+    def delete_test_run(self, run_id: int) -> dict:
         """Delete a test run.
 
         :param run_id:
@@ -144,6 +149,11 @@ class TestRun:
         try:
             result = self.client.send_post(f"delete_run/{run_id}", data=None)
         except APIError as error:
-            raise error
+            print(error)
+            raise RunException
         else:
             return result
+
+
+class RunException(Exception):
+    pass

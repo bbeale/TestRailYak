@@ -10,7 +10,7 @@ class Report(object):
     def __init__(self, api):
         self.client = api
 
-    def get_reports(self, project_id: int):
+    def get_reports(self, project_id: int) -> list:
         try:
             result = self.client.send_get(f"get_reports/{project_id}")
         except APIError as error:
@@ -19,7 +19,7 @@ class Report(object):
         else:
             return result
 
-    def run_report(self, report_template_id: int):
+    def run_report(self, report_template_id: int) -> dict:
         try:
             result = self.client.send_get(f"run_report/{report_template_id}")
         except APIError as error:

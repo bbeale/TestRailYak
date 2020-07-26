@@ -4,14 +4,14 @@ from .lib.testrail import APIError
 from .lib.schema import TestCaseSchema, TestCaseUpdateSchema, SchemaError
 
 
-class TestCase(object):
+class Case(object):
 
     __module__ = "testrail_yak"
 
     def __init__(self, api):
         self.client = api
 
-    def get_test_cases(self, project_id: int):
+    def get_test_cases(self, project_id: int) -> list:
         """Get a list of test cases associated with a given project_id.
 
         :param project_id: project ID of the TestRail project
@@ -25,7 +25,7 @@ class TestCase(object):
         else:
             return result
 
-    def get_test_case(self, case_id: int):
+    def get_test_case(self, case_id: int) -> dict:
         """Get a test case by case_id.
 
         :param case_id: ID of the test case
@@ -39,7 +39,7 @@ class TestCase(object):
         else:
             return result
 
-    def add_test_case(self, section_id: int, data: dict):
+    def add_test_case(self, section_id: int, data: dict) -> dict:
         """Add a test case to a project by section_id.
 
         :param section_id: ID of the TestRail section
@@ -59,7 +59,7 @@ class TestCase(object):
             else:
                 return result
 
-    def update_test_case(self, case_id: int, data: dict):
+    def update_test_case(self, case_id: int, data: dict) -> dict:
         """Update a test case.
 
         :param case_id: ID of the TestRail test case
@@ -79,7 +79,7 @@ class TestCase(object):
             else:
                 return result
 
-    def delete_test_case(self, case_id: int):
+    def delete_test_case(self, case_id: int) -> dict:
         """Delete a test case. """
         try:
             result = self.client.send_post(f"delete_case/{case_id}", data={})
