@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from testrail_yak import TestResult
+from testrail_yak import Result
 from testrail_yak.lib.testrail import APIClient
 from tests import BASEURL, reqmock
 
 client = APIClient(BASEURL)
-tr = TestResult(client)
+r = Result(client)
 
 
 def test_get_test_results(reqmock):
@@ -28,7 +28,7 @@ def test_get_test_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = tr.get_test_results(test_id=test_id)
+    res = r.get_test_results(test_id=test_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -66,7 +66,7 @@ def test_get_testcase_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = tr.get_testcase_results(run_id=run_id, case_id=case_id)
+    res = r.get_testcase_results(run_id=run_id, case_id=case_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -92,7 +92,7 @@ def test_get_testrun_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = tr.get_testrun_results(run_id=run_id)
+    res = r.get_testrun_results(run_id=run_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -127,7 +127,7 @@ def test_add_result(reqmock):
         "assignedto_id": 6
     }
 
-    res = tr.add_result(test_id=test_id,data=data)
+    res = r.add_result(test_id=test_id,data=data)
     assert res is not None
     assert type(res) == dict
     assert res["status_id"] == 5
@@ -168,7 +168,7 @@ def test_add_testcase_result(reqmock):
         "assignedto_id": 6
     }
 
-    res = tr.add_testcase_result(run_id=run_id, case_id=case_id, data=data)
+    res = r.add_testcase_result(run_id=run_id, case_id=case_id, data=data)
     assert res is not None
     assert type(res) == dict
     assert res["status_id"] == 5
@@ -224,7 +224,7 @@ def test_add_results(reqmock):
         ]
     }
 
-    res = tr.add_results(run_id=run_id, data=data)
+    res = r.add_results(run_id=run_id, data=data)
     assert res is not None
 
 
@@ -271,5 +271,5 @@ def test_add_testcase_results(reqmock):
             }
         ]
     }
-    res = tr.add_testcase_results(run_id=run_id, data=data)
+    res = r.add_testcase_results(run_id=run_id, data=data)
     assert res is not None

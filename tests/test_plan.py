@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from testrail_yak import TestPlan
+from testrail_yak import Plan
 from testrail_yak.lib.testrail import APIClient
 from tests import BASEURL, reqmock
 
 client = APIClient(BASEURL)
-tp = TestPlan(client)
+p = Plan(client)
 
 
 def test_get_test_plan(reqmock):
@@ -78,7 +78,7 @@ def test_get_test_plan(reqmock):
             "url": "http:///testrail/index.php?/plans/view/80"
         }''')
 
-    res = tp.get_test_plan(plan_id=plan_id)
+    res = p.get_test_plan(plan_id=plan_id)
     assert res is not None
     assert type(res) == dict
     assert "assignedto_id" in res.keys()
@@ -170,7 +170,7 @@ def test_get_test_plans(reqmock):
             "url": "http:///testrail/index.php?/plans/view/80"
         }]''')
 
-    res = tp.get_test_plans(project_id=project_id)
+    res = p.get_test_plans(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -260,7 +260,7 @@ def test_add_test_plan(reqmock):
                 "case_ids": [1, 2, 3, 5]
             }
         ]}
-    res = tp.add_test_plan(project_id=project_id, data=data)
+    res = p.add_test_plan(project_id=project_id, data=data)
     assert res is not None
     assert type(res) == dict
 
@@ -355,7 +355,7 @@ def test_add_plan_entry(reqmock):
         ]
     }
 
-    res = tp.add_plan_entry(plan_id=plan_id, data=data)
+    res = p.add_plan_entry(plan_id=plan_id, data=data)
     assert res is not None
 
 
@@ -434,7 +434,7 @@ def test_update_plan(reqmock):
         "description": "description"
     }
 
-    res = tp.update_plan(plan_id=plan_id, data=data)
+    res = p.update_plan(plan_id=plan_id, data=data)
     assert res is not None
 
 
@@ -491,24 +491,24 @@ def test_update_plan_entry(reqmock):
         "refs": "",
     }
 
-    res = tp.update_plan_entry(plan_id=plan_id, entry_id=entry_id, data=data)
+    res = p.update_plan_entry(plan_id=plan_id, entry_id=entry_id, data=data)
     assert res is not None
 
 
 def test_close_plan(reqmock):
     plan_id = 80
     reqmock.post(f"{BASEURL}/index.php?/api/v2/close_plan/{plan_id}", status_code=200, text="")
-    tp.close_plan(plan_id=plan_id)
+    p.close_plan(plan_id=plan_id)
 
 
 def test_delete_plan(reqmock):
     plan_id = 80
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_plan/{plan_id}", status_code=200, text="")
-    tp.delete_plan(plan_id=plan_id)
+    p.delete_plan(plan_id=plan_id)
 
 
 def test_delete_plan_entry(reqmock):
     plan_id = 80
     entry_id = 81
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_plan_entry/{plan_id}/{entry_id}", status_code=200, text="")
-    tp.delete_plan_entry(plan_id=plan_id, entry_id=entry_id)
+    p.delete_plan_entry(plan_id=plan_id, entry_id=entry_id)

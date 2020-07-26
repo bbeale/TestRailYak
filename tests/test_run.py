@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from testrail_yak import TestRun
+from testrail_yak import Run
 from testrail_yak.lib.testrail import APIClient
 from tests import BASEURL, reqmock
 
 client = APIClient(BASEURL)
-r = TestRun(client)
+r = Run(client)
 
 
 def test_get_test_run(reqmock):

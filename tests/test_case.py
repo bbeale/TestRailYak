@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from testrail_yak import TestCase
+from testrail_yak import Case
 from testrail_yak.lib.testrail import APIClient
 from tests import BASEURL, reqmock
 
 client = APIClient(BASEURL)
-tc = TestCase(client)
+case = Case(client)
 
 
 def test_get_test_cases(reqmock):
@@ -41,7 +41,7 @@ def test_get_test_cases(reqmock):
             "updated_by": 1,
             "updated_on": 1393586511
         }]''')
-    res = tc.get_test_cases(project_id)
+    res = case.get_test_cases(project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -99,7 +99,7 @@ def test_get_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = tc.get_test_case(case_id)
+    res = case.get_test_case(case_id)
     assert res is not None
     assert type(res) == dict
 
@@ -139,7 +139,7 @@ def test_add_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = tc.add_test_case(section_id, data)
+    res = case.add_test_case(section_id, data)
     assert res is not None
     assert type(res) == dict
 
@@ -179,7 +179,7 @@ def test_update_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = tc.update_test_case(case_id, data)
+    res = case.update_test_case(case_id, data)
     assert res is not None
     assert type(res) == dict
 
@@ -187,4 +187,4 @@ def test_update_test_case(reqmock):
 def test_delete_test_case(reqmock):
     case_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_case/{case_id}", status_code=200, text='')
-    tc.delete_test_case(case_id)
+    case.delete_test_case(case_id)
