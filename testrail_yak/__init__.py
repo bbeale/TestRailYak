@@ -34,6 +34,8 @@ class TestRailYak(APIClient):
         self.client             = APIClient(url)
         self.client.user        = uname
         self.client.password    = passwd
+
+        # Classes for each endpoint
         self.attachment         = Attachment(self.client)
         self.case               = Case(self.client)
         self.case_field         = CaseField(self.client)
@@ -41,10 +43,15 @@ class TestRailYak(APIClient):
         self.config             = Configuration(self.client)
         self.milestone          = Milestone(self.client)
         self.plan               = Plan(self.client)
+        self.priority           = Priority(self.client)
         self.project            = Project(self.client)
-        self.section            = Section(self.client)
-        self.test               = Test(self.client)
-        self.run                = Run(self.client)
-        self.suite              = Suite(self.client)
-        self.user               = User(self.client)
+        self.report             = Report(self.client)
         self.result             = Result(self.client)
+        self.result_field       = ResultField(self.client)
+        self.run                = Run(self.client)
+        self.section            = Section(self.client)
+        self.status             = Status(self.client)
+        self.suite              = Suite(self.client)
+        self.template           = Template(self.client)
+        self.test               = Test(self.client)
+        self.user               = User(self.client)
