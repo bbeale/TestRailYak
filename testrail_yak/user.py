@@ -10,7 +10,7 @@ class User:
     def __init__(self, api):
         self.client = api
 
-    def get_user(self, user_id: int):
+    def get(self, user_id: int):
         """Get a TestRail user by user_id.
 
         :param user_id: user ID of the user we want to grab
@@ -24,7 +24,7 @@ class User:
         else:
             return result
 
-    def get_user_by_email(self, email_addr: str):
+    def get_by_email(self, email_addr: str):
         """Get a TestRail user by email.
 
         :param email_addr: email address of the user we want to grab
@@ -38,7 +38,7 @@ class User:
         else:
             return result
 
-    def get_users(self):
+    def get_all(self):
         """Get a list of TestRail users.
 
         :return: response from TestRail API containing the user collection

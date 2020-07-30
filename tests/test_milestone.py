@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 m = Milestone(client)
 
 
-def test_get_milestone(reqmock):
+def test_get(reqmock):
     milestone_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_milestone/{milestone_id}",
         status_code=200,
@@ -23,7 +23,7 @@ def test_get_milestone(reqmock):
             "url": "http:///testrail/index.php?/milestones/view/1"
         }''')
 
-    res = m.get_milestone(milestone_id=milestone_id)
+    res = m.get(milestone_id=milestone_id)
     assert res is not None
     assert type(res) == dict
     assert "completed_on" in res.keys()
@@ -36,7 +36,7 @@ def test_get_milestone(reqmock):
     assert "url" in res.keys()
 
 
-def test_get_milestones(reqmock):
+def test_get_all(reqmock):
     project_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_milestones/{project_id}",
         status_code=200,
@@ -50,13 +50,13 @@ def test_get_milestones(reqmock):
             "project_id": 1,
             "url": "http:///testrail/index.php?/milestones/view/1"
         }]''')
-    res = m.get_milestones(project_id=project_id)
+    res = m.get_all(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
 
 
-def test_add_milestone(reqmock):
+def test_add(reqmock):
     project_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_milestone/{project_id}",
         status_code=200,
@@ -72,11 +72,11 @@ def test_add_milestone(reqmock):
         }''')
 
     data = {"name": "Release 1.5", "description": "...", "due_on": 1391968184}
-    res = m.add_milestone(project_id=project_id, data=data)
+    res = m.add(project_id=project_id, data=data)
     assert res is not None
 
 
-def test_update_milestone(reqmock):
+def test_update(reqmock):
     milestone_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/update_milestone/{milestone_id}",
         status_code=200,
@@ -92,14 +92,14 @@ def test_update_milestone(reqmock):
             }''')
 
     data = {"name": "Release 1.5", "description": "...", "due_on": 1391968184}
-    res = m.update_milestone(milestone_id=milestone_id, data=data)
+    res = m.update(milestone_id=milestone_id, data=data)
     assert res is not None
 
 
-def test_delete_milestone(reqmock):
+def test_delete(reqmock):
     milestone_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_milestone/{milestone_id}",
         status_code=200,
         text='')
-    res = m.delete_milestone(milestone_id=milestone_id)
+    res = m.delete(milestone_id=milestone_id)
     assert res is not None

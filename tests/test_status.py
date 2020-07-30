@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 s = Status(client)
 
 
-def test_get_statuses(reqmock):
+def test_get(reqmock):
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_statuses",
         status_code=200,
         text='''[
@@ -47,7 +47,7 @@ def test_get_statuses(reqmock):
             }
         ]''')
 
-    res = s.get_statuses()
+    res = s.get()
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

@@ -39,7 +39,7 @@ class APIClient:
 
 		:param uri: The API method to call including parameters, e.g. get_case/1.
 		:param filepath: The path and file name for attachment download; used only
-		for 'get_attachment/:attachment_id'.
+		for 'by_id/:attachment_id'.
 		:return: A dict containing the result of the request.
 		"""
 		return self.__send_request('GET', uri, filepath)
@@ -47,7 +47,7 @@ class APIClient:
 	def send_post(self, uri, data):
 		"""Issue a POST request (write) against the API.
 
-		:param uri: The API method to call, including parameters, e.g. add_case/1.
+		:param uri: The API method to call, including parameters, e.g. add/1.
 		:param data: The data to submit as part of the request as a dict; strings
 				must be UTF-8 encoded. If adding an attachment, must be the
 				path to the file.
@@ -86,7 +86,7 @@ class APIClient:
 				error = str(response.content)
 			raise APIError('TestRail API returned HTTP %s (%s)' % (response.status_code, error))
 		else:
-			if uri[:15] == 'get_attachment/':  # Expecting file, not JSON
+			if uri[:15] == 'by_id/':  # Expecting file, not JSON
 				try:
 					open(data, 'wb').write(response.content)
 					return (data)

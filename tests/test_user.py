@@ -9,7 +9,7 @@ client = APIClient(BASEURL)
 u = User(client)
 
 
-def test_get_user(reqmock):
+def test_get(reqmock):
     user_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_user/{user_id}",
         status_code=200,
@@ -20,7 +20,7 @@ def test_get_user(reqmock):
             "name": "Alexis Gonzalez"
         }''')
 
-    res = u.get_user(user_id=user_id)
+    res = u.get(user_id=user_id)
     assert res is not None
     assert type(res) == dict
     assert "email" in res.keys()
@@ -29,7 +29,7 @@ def test_get_user(reqmock):
     assert "name" in res.keys()
 
 
-def test_get_user_by_email(reqmock):
+def test_get_by_email(reqmock):
     email = "alexis@example.com"
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_user_by_email&email={email}",
         status_code=200,
@@ -40,14 +40,14 @@ def test_get_user_by_email(reqmock):
             "name": "Alexis Gonzalez"
         }''')
 
-    res = u.get_user_by_email(email_addr=email)
+    res = u.get_by_email(email_addr=email)
     assert res is not None
     assert type(res) == dict
     assert "email" in res.keys()
     assert res["email"] == email
 
 
-def test_get_users(reqmock):
+def test_get_all(reqmock):
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_users",
         status_code=200,
         text='''[{
@@ -57,7 +57,7 @@ def test_get_users(reqmock):
             "name": "Alexis Gonzalez"
         }]''')
 
-    res = u.get_users()
+    res = u.get_all()
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

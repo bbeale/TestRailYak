@@ -38,7 +38,7 @@ def test_get_result_fields(reqmock):
             }
         ]''')
 
-    res = rf.get_result_fields()
+    res = rf.get()
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

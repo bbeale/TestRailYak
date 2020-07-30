@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 t = Template(client)
 
 
-def test_get_templates(reqmock):
+def test_get(reqmock):
     project_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_templates/{project_id}",
         status_code=200,
@@ -30,7 +30,7 @@ def test_get_templates(reqmock):
             }
         ]''')
 
-    res = t.get_templates(project_id=project_id)
+    res = t.get(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

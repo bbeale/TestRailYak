@@ -10,7 +10,7 @@ class Template(object):
     def __init__(self, api):
         self.client = api
 
-    def get_templates(self, project_id: int) -> list:
+    def get(self, project_id: int) -> list:
         """Returns a list of available templates. """
         try:
             result = self.client.send_get(f"get_templates/{project_id}")

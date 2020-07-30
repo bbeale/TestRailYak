@@ -6,7 +6,7 @@ import setuptools
 
 setuptools.setup(
       name="testrail_yak",
-      version="2.0.3",
+      version="2.0.4",
       packages=["testrail_yak", "testrail_yak.lib"],
       classifiers=[
             "Programming Language :: Python :: 3",

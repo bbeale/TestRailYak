@@ -11,7 +11,7 @@ class Run(object):
     def __init__(self, api):
         self.client = api
 
-    def get_test_run(self, run_id: int) -> dict:
+    def get(self, run_id: int) -> dict:
         """Get a test run by run_id.
 
         :param run_id: ID of the test run
@@ -25,7 +25,7 @@ class Run(object):
         else:
             return result
 
-    def get_test_runs(self, project_id: int) -> list:
+    def get_all(self, project_id: int) -> list:
         """Get a list of test runs associated with a given project_id.
 
         :param project_id: project ID of the TestRail project
@@ -39,7 +39,7 @@ class Run(object):
         else:
             return result
 
-    def add_test_run(self, project_id: int, data: dict) -> dict:
+    def add(self, project_id: int, data: dict) -> dict:
         """Add a test run to a project.
 
         Supported fields:
@@ -86,7 +86,7 @@ class Run(object):
             else:
                 return result
 
-    def update_test_run(self, run_id: int, data: dict) -> dict:
+    def update(self, run_id: int, data: dict) -> dict:
         """Update a test run in a project.
 
         Supported fields:
@@ -126,7 +126,7 @@ class Run(object):
             else:
                 return result
 
-    def close_test_run(self, run_id: int) -> dict:
+    def close(self, run_id: int) -> dict:
         """Close out a test run.
 
         :param run_id:
@@ -140,7 +140,7 @@ class Run(object):
         else:
             return result
 
-    def delete_test_run(self, run_id: int) -> dict:
+    def delete(self, run_id: int) -> dict:
         """Delete a test run.
 
         :param run_id:

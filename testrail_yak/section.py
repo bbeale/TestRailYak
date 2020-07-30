@@ -11,7 +11,7 @@ class Section(object):
     def __init__(self, api):
         self.client = api
 
-    def get_section(self, section_id: int) -> dict:
+    def get(self, section_id: int) -> dict:
         """Get test section from a test suite by section_id.
 
         :param section_id: section ID to grab section from
@@ -25,7 +25,7 @@ class Section(object):
         else:
             return result
 
-    def get_sections(self, project_id: int) -> list:
+    def get_all(self, project_id: int) -> list:
         """Get a list of test sections associated with a project_id and an optional suite_id
 
         :param project_id:
@@ -39,7 +39,7 @@ class Section(object):
         else:
             return result
 
-    def get_sections_by_suite_id(self, project_id: int, suite_id: int) -> list:
+    def get_by_suite_id(self, project_id: int, suite_id: int) -> list:
         """Get a list of test sections associated with a project_id and an optional suite_id
 
         :param project_id:
@@ -54,7 +54,7 @@ class Section(object):
         else:
             return result
 
-    def add_section(self, project_id: int, data: dict) -> dict:
+    def add(self, project_id: int, data: dict) -> dict:
         """Add a new section representing a "sprint" to a TestRail project.
 
         For readability, this separate method is just for adding parent sections (Jira sprints) vs child sections (Jira stories).
@@ -78,7 +78,7 @@ class Section(object):
             else:
                 return result
 
-    def add_child_section(self, project_id: int, parent_id: int, data: dict) -> dict:
+    def add_child(self, project_id: int, parent_id: int, data: dict) -> dict:
         """Add a new child section representing a "story" to a TestRail project. The differentiating factor is the parent ID value.
 
         This section will be assigned to a parent/child relationship with a parent section, thus parent_id is required.
@@ -106,7 +106,7 @@ class Section(object):
             else:
                 return result
 
-    def update_section(self, section_id: int, data: dict) -> dict:
+    def update(self, section_id: int, data: dict) -> dict:
         """Updates an existing section (partial updates are supported, i.e. you can submit and update specific fields only). """
         try:
             data = SectionUpdateSchema().load(data, partial=True)
@@ -121,7 +121,7 @@ class Section(object):
             else:
                 return result
 
-    def delete_section(self, section_id: int) -> dict:
+    def delete(self, section_id: int) -> dict:
         """Deletes an existing section. """
         try:
             result = self.client.send_post(f"delete_section/{section_id}", data=None)

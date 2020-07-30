@@ -10,7 +10,7 @@ class Priority(object):
     def __init__(self, api):
         self.client = api
 
-    def get_priorities(self) -> list:
+    def get_all(self) -> list:
         try:
             result = self.client.send_get("get_priorities")
         except APIError as error:

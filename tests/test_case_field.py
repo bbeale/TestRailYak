@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 cf = CaseField(client)
 
 
-def test_get_case_fields(reqmock):
+def test_get_all(reqmock):
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_case_fields",
         status_code=200,
         text='''[
@@ -38,7 +38,7 @@ def test_get_case_fields(reqmock):
             }
         ]''')
 
-    res = cf.get_case_fields()
+    res = cf.get_all()
     assert res is not None
     assert "configs" in res[0].keys()
     assert "context" in res[0]["configs"][0].keys()
@@ -53,7 +53,7 @@ def test_get_case_fields(reqmock):
     assert "type_id" in res[0].keys()
 
 
-def test_add_case_field(reqmock):
+def test_add(reqmock):
 
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_case_field",
         status_code=200,
@@ -94,7 +94,7 @@ def test_add_case_field(reqmock):
         }]
     }
 
-    res = cf.add_case_field(data)
+    res = cf.add(data)
     assert res is not None
     assert "description" in res.keys()
     assert "display_order" in res.keys()

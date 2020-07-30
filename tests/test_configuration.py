@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 conf = Configuration(client)
 
 
-def test_get_configs(reqmock):
+def test_get_all(reqmock):
     project_id = 100
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_configs/{project_id}",
         status_code=200,
@@ -59,7 +59,7 @@ def test_get_configs(reqmock):
             }
         ]''',)
 
-    res = conf.get_configs(project_id=project_id)
+    res = conf.get_all(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -71,7 +71,7 @@ def test_get_configs(reqmock):
     assert "name" in res[0]["configs"][0]
 
 
-def test_add_config_group(reqmock):
+def test_add_group(reqmock):
     project_id = 100
     name = "Browsers"
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_config_group/{project_id}",
@@ -79,13 +79,13 @@ def test_add_config_group(reqmock):
         text='''{
             "name": "Browsers"
         }''')
-    res = conf.add_config_group(project_id=project_id, name=name)
+    res = conf.add_group(project_id=project_id, name=name)
     assert res is not None
     assert "name" in res.keys()
     assert res["name"] == name
 
 
-def test_add_config(reqmock):
+def test_add(reqmock):
     config_group_id = 100
     name = "Chrome"
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_config/{config_group_id}",
@@ -93,13 +93,13 @@ def test_add_config(reqmock):
         text='''{
             "name": "Chrome"
         }''')
-    res = conf.add_config(config_group_id=config_group_id, name=name)
+    res = conf.add(config_group_id=config_group_id, name=name)
     assert res is not None
     assert "name" in res.keys()
     assert res["name"] == name
 
 
-def test_update_config_group(reqmock):
+def test_update_group(reqmock):
     config_group_id = 100
     name = "Browsers"
     reqmock.post(f"{BASEURL}/index.php?/api/v2/update_config_group/{config_group_id}",
@@ -107,13 +107,13 @@ def test_update_config_group(reqmock):
         text='''{
             "name": "Browsers"
         }''')
-    res = conf.update_config_group(config_group_id=config_group_id, name=name)
+    res = conf.update_group(config_group_id=config_group_id, name=name)
     assert res is not None
     assert "name" in res.keys()
     assert res["name"] == name
 
 
-def test_update_config(reqmock):
+def test_update(reqmock):
     config_id = 100
     name = "Chrome"
     reqmock.post(f"{BASEURL}/index.php?/api/v2/update_config/{config_id}",
@@ -121,21 +121,21 @@ def test_update_config(reqmock):
         text='''{
             "name": "Chrome"
         }''')
-    res = conf.update_config(config_id=config_id, name=name)
+    res = conf.update(config_id=config_id, name=name)
     assert res is not None
     assert "name" in res.keys()
     assert res["name"] == name
 
 
-def test_delete_config_group(reqmock):
+def test_delete_group(reqmock):
     config_group_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_config_group/{config_group_id}",
         text='', status_code=200)
-    conf.delete_config_group(config_group_id=config_group_id)
+    conf.delete_group(config_group_id=config_group_id)
 
 
-def test_delete_config(reqmock):
+def test_delete(reqmock):
     config_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_config/{config_id}",
         text='', status_code=200)
-    conf.delete_config(config_id=config_id)
+    conf.delete(config_id=config_id)

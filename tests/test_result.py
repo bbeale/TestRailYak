@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 r = Result(client)
 
 
-def test_get_test_results(reqmock):
+def test_get_all(reqmock):
     test_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results/{test_id}",
         status_code=200,
@@ -28,7 +28,7 @@ def test_get_test_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = r.get_test_results(test_id=test_id)
+    res = r.get_all(test_id=test_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -45,7 +45,7 @@ def test_get_test_results(reqmock):
     assert "version" in res[0].keys()
 
 
-def test_get_testcase_results(reqmock):
+def test_get_all_from_test_case(reqmock):
     run_id = 1
     case_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results_for_case/{run_id}/{case_id}",
@@ -66,13 +66,13 @@ def test_get_testcase_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = r.get_testcase_results(run_id=run_id, case_id=case_id)
+    res = r.get_all_from_test_case(run_id=run_id, case_id=case_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
 
 
-def test_get_testrun_results(reqmock):
+def test_get_all_from_test_run(reqmock):
     run_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_results_for_run/{run_id}",
         status_code=200,
@@ -92,13 +92,13 @@ def test_get_testrun_results(reqmock):
             "version": "1.0RC1"
         }]''')
 
-    res = r.get_testrun_results(run_id=run_id)
+    res = r.get_all_from_test_run(run_id=run_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
 
 
-def test_add_result(reqmock):
+def test_add(reqmock):
     test_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_result/{test_id}",
         status_code=200,
@@ -127,7 +127,7 @@ def test_add_result(reqmock):
         "assignedto_id": 6
     }
 
-    res = r.add_result(test_id=test_id,data=data)
+    res = r.add(test_id=test_id, data=data)
     assert res is not None
     assert type(res) == dict
     assert res["status_id"] == 5
@@ -138,7 +138,7 @@ def test_add_result(reqmock):
     assert res["assignedto_id"] == 6
 
 
-def test_add_testcase_result(reqmock):
+def test_add_to_test_case(reqmock):
     run_id = 1
     case_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_result_for_case/{run_id}/{case_id}",
@@ -168,7 +168,7 @@ def test_add_testcase_result(reqmock):
         "assignedto_id": 6
     }
 
-    res = r.add_testcase_result(run_id=run_id, case_id=case_id, data=data)
+    res = r.add_to_test_case(run_id=run_id, case_id=case_id, data=data)
     assert res is not None
     assert type(res) == dict
     assert res["status_id"] == 5
@@ -228,7 +228,7 @@ def test_add_results(reqmock):
     assert res is not None
 
 
-def test_add_testcase_results(reqmock):
+def test_add_results_to_case(reqmock):
     run_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_results_for_cases/{run_id}",
         status_code=200,
@@ -271,5 +271,5 @@ def test_add_testcase_results(reqmock):
             }
         ]
     }
-    res = r.add_testcase_results(run_id=run_id, data=data)
+    res = r.add_results_to_case(run_id=run_id, data=data)
     assert res is not None

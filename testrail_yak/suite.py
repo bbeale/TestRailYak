@@ -11,7 +11,7 @@ class Suite(object):
     def __init__(self, api):
         self.client = api
 
-    def get_test_suite(self, suite_id: int) -> dict:
+    def get(self, suite_id: int) -> dict:
         """Get a test suite by suite_id.
 
         :param suite_id: ID of the test suite
@@ -25,7 +25,7 @@ class Suite(object):
         else:
             return result
 
-    def get_test_suites(self, project_id: int) -> list:
+    def get_all(self, project_id: int) -> list:
         """Get a list of test suites associated with a given project_id.
 
         :param project_id: project ID of the TestRail project
@@ -39,7 +39,7 @@ class Suite(object):
         else:
             return result
 
-    def add_test_suite(self, project_id: int, data: dict) -> dict:
+    def add(self, project_id: int, data: dict) -> dict:
         """Add a new test suite to a TestRail project.
 
         :param project_id: ID of the TestRail project
@@ -59,7 +59,7 @@ class Suite(object):
             else:
                 return result
 
-    def update_test_suite(self, suite_id: int, data: dict) -> dict:
+    def update(self, suite_id: int, data: dict) -> dict:
         """Add a new test suite to a TestRail project.
 
         :param suite_id: ID of the test suite

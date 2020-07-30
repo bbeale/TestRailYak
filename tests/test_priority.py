@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 p = Priority(client)
 
 
-def test_get_priorities(reqmock):
+def test_get_all(reqmock):
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_priorities",
         status_code=200,
         text='''[{
@@ -18,7 +18,7 @@ def test_get_priorities(reqmock):
                 "priority": 1,
                 "short_name": "1 - Don't"
             }]''')
-    res = p.get_priorities()
+    res = p.get_all()
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

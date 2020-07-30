@@ -26,7 +26,7 @@ def make_file(file):
         raise err
 
 
-def test_attach_to_plan(reqmock):
+def test_add_to_plan(reqmock):
     file_path = "attachment.txt"
     plan_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_attachment_to_plan/{plan_id}",
@@ -35,14 +35,14 @@ def test_attach_to_plan(reqmock):
             "attachment_id": 443
         }""")
 
-    res = a.attach_to_plan(plan_id, file_path)
+    res = a.add_to_plan(plan_id, file_path)
     assert res is not None
     assert type(res) == dict
     assert "attachment_id" in res.keys()
     assert res["attachment_id"] == 443
 
 
-def test_attach_to_plan_entry(reqmock):
+def test_add_to_plan_entry(reqmock):
     file_path = "attachment.txt"
     plan_id = 100
     entry_id = 200
@@ -52,14 +52,14 @@ def test_attach_to_plan_entry(reqmock):
             "attachment_id": 443
         }""")
 
-    res = a.attach_to_plan_entry(plan_id, entry_id, file_path)
+    res = a.add_to_plan_entry(plan_id, entry_id, file_path)
     assert res is not None
     assert type(res) == dict
     assert "attachment_id" in res.keys()
     assert res["attachment_id"] == 443
 
 
-def test_attach_to_result(reqmock):
+def test_add_to_result(reqmock):
     file_path = "attachment.txt"
     result_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_attachment_to_result/{result_id}",
@@ -68,14 +68,14 @@ def test_attach_to_result(reqmock):
             "attachment_id": 443
         }""")
 
-    res = a.attach_to_result(result_id, file_path)
+    res = a.add_to_result(result_id, file_path)
     assert res is not None
     assert type(res) == dict
     assert "attachment_id" in res.keys()
     assert res["attachment_id"] == 443
 
 
-def test_attach_to_run(reqmock):
+def test_add_to_run(reqmock):
     file_path = "attachment.txt"
     run_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_attachment_to_run/{run_id}",
@@ -84,14 +84,14 @@ def test_attach_to_run(reqmock):
             "attachment_id": 443
         }""")
 
-    res = a.attach_to_run(run_id, file_path)
+    res = a.add_to_run(run_id, file_path)
     assert res is not None
     assert type(res) == dict
     assert "attachment_id" in res.keys()
     assert res["attachment_id"] == 443
 
 
-def test_get_case_attachments(reqmock):
+def test_get_from_case(reqmock):
     case_id = 100
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachments_for_case/{case_id}",
         status_code=200,
@@ -109,7 +109,7 @@ def test_get_case_attachments(reqmock):
             }
         ]""")
 
-    res = a.get_case_attachments(case_id)
+    res = a.get_from_case(case_id)
     assert res is not None
     assert "id" in res[0].keys()
     assert "name" in res[0].keys()
@@ -122,7 +122,7 @@ def test_get_case_attachments(reqmock):
     assert "user_id" in res[0].keys()
 
 
-def test_get_plan_attachments(reqmock):
+def test_get_from_plan(reqmock):
     plan_id = 100
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachments_for_plan/{plan_id}",
         status_code=200,
@@ -140,7 +140,7 @@ def test_get_plan_attachments(reqmock):
             }
         ]""")
 
-    res = a.get_plan_attachments(plan_id)
+    res = a.get_from_plan(plan_id)
     assert res is not None
     assert "id" in res[0].keys()
     assert "name" in res[0].keys()
@@ -153,7 +153,7 @@ def test_get_plan_attachments(reqmock):
     assert "user_id" in res[0].keys()
 
 
-def test_get_plan_entry_attachments(reqmock):
+def test_get_from_plan_entry(reqmock):
     plan_id = 444
     entry_id = 444
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachments_for_plan_entry/{plan_id}/{entry_id}",
@@ -172,7 +172,7 @@ def test_get_plan_entry_attachments(reqmock):
             }
         ]""")
 
-    res = a.get_plan_entry_attachments(plan_id, entry_id)
+    res = a.get_from_plan_entry(plan_id, entry_id)
     assert res is not None
     assert "id" in res[0].keys()
     assert "name" in res[0].keys()
@@ -185,7 +185,7 @@ def test_get_plan_entry_attachments(reqmock):
     assert "user_id" in res[0].keys()
 
 
-def test_get_run_attachments(reqmock):
+def test_get_from_run(reqmock):
     run_id = 444
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachments_for_run/{run_id}",
         status_code=200,
@@ -203,7 +203,7 @@ def test_get_run_attachments(reqmock):
             }
         ]""")
 
-    res = a.get_run_attachments(run_id)
+    res = a.get_from_run(run_id)
     assert res is not None
     assert "id" in res[0].keys()
     assert "name" in res[0].keys()
@@ -216,7 +216,7 @@ def test_get_run_attachments(reqmock):
     assert "user_id" in res[0].keys()
 
 
-def test_get_test_attachments(reqmock):
+def test_get_from_test(reqmock):
     test_id = 444
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachments_for_test/{test_id}",
         status_code=200,
@@ -234,7 +234,7 @@ def test_get_test_attachments(reqmock):
             }
         ]""")
 
-    res = a.get_test_attachments(test_id)
+    res = a.get_from_test(test_id)
     assert res is not None
     assert "id" in res[0].keys()
     assert "name" in res[0].keys()
@@ -247,23 +247,23 @@ def test_get_test_attachments(reqmock):
     assert "user_id" in res[0].keys()
 
 
-def test_get_attachment(reqmock):
+def test_get(reqmock):
     attachment_id = 444
     file_path = '../data/new_attachment.txt'
     check_file(file_path)
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_attachment/{attachment_id}",
         status_code=200, text='''Test''')
 
-    res = a.get_attachment(attachment_id, file_path)
+    res = a.get(attachment_id, file_path)
     assert res is not None
-    assert os.path.exists(res)
-    assert os.path.isfile(res)
+    assert type(res) == str
+    assert res == "Test"
     os.remove(file_path)
 
 
-def test_delete_attachment(reqmock):
+def test_delete(reqmock):
     attachment_id = 444
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_attachment/{attachment_id}", status_code=200, text="""{}""")
-    res = a.delete_attachment(attachment_id)
+    res = a.delete(attachment_id)
     assert res is not None
     assert type(res) == dict

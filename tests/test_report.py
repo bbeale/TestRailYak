@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 r = Report(client)
 
 
-def test_get_reports(reqmock):
+def test_get(reqmock):
     project_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_reports/{project_id}",
         status_code=200,
@@ -44,7 +44,7 @@ def test_get_reports(reqmock):
             "cases_include_updated": true
         }]''')
 
-    res = r.get_reports(project_id=project_id)
+    res = r.get(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -59,7 +59,7 @@ def test_get_reports(reqmock):
     assert "notify_attachment_pdf_format" in res[0].keys()
 
 
-def test_run_report(reqmock):
+def test_run(reqmock):
     report_template_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/run_report/{report_template_id}",
         status_code=200,
@@ -69,7 +69,7 @@ def test_run_report(reqmock):
             "report_pdf": "https://docs.testrail.com/index.php?/reports/get_pdf/383"
         }''')
 
-    res = r.run_report(report_template_id=report_template_id)
+    res = r.run(report_template_id=report_template_id)
     assert res is not None
     assert type(res) == dict
     assert "report_url" in res.keys()

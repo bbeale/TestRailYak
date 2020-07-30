@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 ct = CaseType(client)
 
 
-def test_get_case_types(reqmock):
+def test_get_all(reqmock):
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_case_types",
         status_code=200,
         text='''[{
@@ -22,7 +22,7 @@ def test_get_case_types(reqmock):
                 "name": "Functionality"
             }]''')
 
-    res = ct.get_case_types()
+    res = ct.get_all()
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

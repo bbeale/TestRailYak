@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 t = Test(client)
 
 
-def test_get_testrun_test(reqmock):
+def test_get(reqmock):
     test_id = 100
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_test/{test_id}",
         status_code=200,
@@ -37,7 +37,7 @@ def test_get_testrun_test(reqmock):
             "type_id": 4
         }''')
 
-    res = t.get_testrun_test(test_id=test_id)
+    res = t.get(test_id=test_id)
     assert res is not None
     assert type(res) == dict
     assert "assignedto_id" in res.keys()
@@ -55,7 +55,7 @@ def test_get_testrun_test(reqmock):
     assert "type_id" in res.keys()
 
 
-def test_get_testrun_tests(reqmock):
+def test_get_all(reqmock):
     run_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_tests/{run_id}",
         status_code=200,
@@ -84,7 +84,7 @@ def test_get_testrun_tests(reqmock):
             "type_id": 4
         }]''')
 
-    res = t.get_testrun_tests(run_id=run_id)
+    res = t.get_all(run_id=run_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict

@@ -10,7 +10,7 @@ class Test:
     def __init__(self, api):
         self.client = api
 
-    def get_testrun_test(self, test_id: int) -> dict:
+    def get(self, test_id: int) -> dict:
         """Get an individual test.
 
         :param test_id: ID of the individual test
@@ -24,7 +24,7 @@ class Test:
         else:
             return result
 
-    def get_testrun_tests(self, run_id: int) -> list:
+    def get_all(self, run_id: int) -> list:
         """Get a collection of individual tests by run_id.
 
         :param run_id: ID of the test run

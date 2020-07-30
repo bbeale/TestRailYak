@@ -10,7 +10,7 @@ class CaseType(object):
     def __init__(self, api):
         self.client = api
 
-    def get_case_types(self) -> list:
+    def get_all(self) -> list:
         """Returns a list of available case types. """
         try:
             result = self.client.send_get(f"get_case_types")

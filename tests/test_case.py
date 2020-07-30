@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 case = Case(client)
 
 
-def test_get_test_cases(reqmock):
+def test_get_all(reqmock):
     project_id = 10
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_cases/{project_id}",
         status_code=200,
@@ -41,7 +41,7 @@ def test_get_test_cases(reqmock):
             "updated_by": 1,
             "updated_on": 1393586511
         }]''')
-    res = case.get_test_cases(project_id)
+    res = case.get_all(project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
@@ -65,7 +65,7 @@ def test_get_test_cases(reqmock):
     assert "updated_on" in res[0].keys()
 
 
-def test_get_test_case(reqmock):
+def test_get(reqmock):
     case_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_case/{case_id}",
         status_code=200,
@@ -99,12 +99,12 @@ def test_get_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = case.get_test_case(case_id)
+    res = case.get(case_id)
     assert res is not None
     assert type(res) == dict
 
 
-def test_add_test_case(reqmock):
+def test_add(reqmock):
     section_id = 100
     data = {}
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_case/{section_id}",
@@ -139,12 +139,12 @@ def test_add_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = case.add_test_case(section_id, data)
+    res = case.add(section_id, data)
     assert res is not None
     assert type(res) == dict
 
 
-def test_update_test_case(reqmock):
+def test_update(reqmock):
     case_id = 100
     data = {}
     reqmock.post(f"{BASEURL}/index.php?/api/v2/update_case/{case_id}",
@@ -179,12 +179,12 @@ def test_update_test_case(reqmock):
             "updated_on": 1393586511
         }''')
 
-    res = case.update_test_case(case_id, data)
+    res = case.update(case_id, data)
     assert res is not None
     assert type(res) == dict
 
 
-def test_delete_test_case(reqmock):
+def test_delete(reqmock):
     case_id = 100
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_case/{case_id}", status_code=200, text='')
-    case.delete_test_case(case_id)
+    case.delete(case_id)

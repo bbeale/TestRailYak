@@ -8,7 +8,7 @@ client = APIClient(BASEURL)
 r = Run(client)
 
 
-def test_get_test_run(reqmock):
+def test_get(reqmock):
     run_id = 81
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_run/{run_id}",
         status_code=200,
@@ -47,7 +47,7 @@ def test_get_test_run(reqmock):
             "url": "http:///testrail/index.php?/runs/view/81"
         }''')
 
-    res = r.get_test_run(run_id=run_id)
+    res = r.get(run_id=run_id)
     assert res is not None
     assert type(res) == dict
     assert "assignedto_id" in res.keys()
@@ -74,7 +74,7 @@ def test_get_test_run(reqmock):
     assert "refs" in res.keys()
 
 
-def test_get_test_runs(reqmock):
+def test_get_all(reqmock):
     project_id = 1
     reqmock.get(f"{BASEURL}/index.php?/api/v2/get_runs/{project_id}",
         status_code=200,
@@ -113,13 +113,13 @@ def test_get_test_runs(reqmock):
             "url": "http:///testrail/index.php?/runs/view/81"
         }]''')
 
-    res = r.get_test_runs(project_id=project_id)
+    res = r.get_all(project_id=project_id)
     assert res is not None
     assert type(res) == list
     assert type(res[0]) == dict
 
 
-def test_add_test_run(reqmock):
+def test_add(reqmock):
     project_id = 1
     reqmock.post(f"{BASEURL}/index.php?/api/v2/add_run/{project_id}",
         status_code=200,
@@ -167,12 +167,12 @@ def test_add_test_run(reqmock):
         "case_ids": [1, 2, 3, 4, 7, 8]
     }
 
-    res = r.add_test_run(project_id=project_id, data=data)
+    res = r.add(project_id=project_id, data=data)
     assert res is not None
     assert type(res) == dict
 
 
-def test_update_test_run(reqmock):
+def test_update(reqmock):
     run_id = 81
     reqmock.post(f"{BASEURL}/index.php?/api/v2/update_run/{run_id}",
         status_code=200,
@@ -218,12 +218,12 @@ def test_update_test_run(reqmock):
         "case_ids": [1, 2, 3]
     }
 
-    res = r.update_test_run(run_id=run_id, data=data)
+    res = r.update(run_id=run_id, data=data)
     assert res is not None
     assert type(res) == dict
 
 
-def test_close_test_run(reqmock):
+def test_close(reqmock):
     run_id = 81
     reqmock.post(f"{BASEURL}/index.php?/api/v2/close_run/{run_id}",
         status_code=200,
@@ -262,10 +262,10 @@ def test_close_test_run(reqmock):
             "url": "http:///testrail/index.php?/runs/view/81"
         }''')
 
-    r.close_test_run(run_id=run_id)
+    r.close(run_id=run_id)
 
 
-def test_delete_test_run(reqmock):
+def test_delete(reqmock):
     run_id = 81
     reqmock.post(f"{BASEURL}/index.php?/api/v2/delete_run/{run_id}",
         status_code=200,
@@ -304,4 +304,4 @@ def test_delete_test_run(reqmock):
             "url": "http:///testrail/index.php?/runs/view/81"
         }''')
 
-    r.delete_test_run(run_id=run_id)
+    r.delete(run_id=run_id)
